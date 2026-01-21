@@ -53,8 +53,8 @@ export default function Home() {
                   미리보기
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-5xl h-[90vh]">
-                <DialogHeader>
+              <DialogContent className="max-w-6xl w-[95vw] h-[95vh] flex flex-col">
+                <DialogHeader className="shrink-0">
                   <DialogTitle className="flex items-center justify-between">
                     <span>Preview</span>
                     <div className="flex items-center gap-4">
@@ -66,9 +66,9 @@ export default function Home() {
                     </div>
                   </DialogTitle>
                 </DialogHeader>
-                <ScrollArea className="h-full">
+                <div className="flex-1 overflow-auto min-h-0">
                   <QuotePreview quote={draft} />
-                </ScrollArea>
+                </div>
               </DialogContent>
             </Dialog>
             <Button size="sm" onClick={handlePrint}>
