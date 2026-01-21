@@ -53,7 +53,7 @@ export default function Home() {
                   미리보기
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-6xl w-[95vw] h-[95vh] flex flex-col">
+              <DialogContent className="max-w-[95vw] w-[95vw] h-[95vh] flex flex-col">
                 <DialogHeader className="shrink-0">
                   <DialogTitle className="flex items-center justify-between">
                     <span>Preview</span>
