@@ -66,6 +66,16 @@ export interface Quote {
   expansions: ExpansionOption[]
 }
 
+export interface SavedQuote {
+  id: string
+  name: string
+  createdAt: string
+  updatedAt: string
+  data: Quote
+}
+
+export const MAX_SAVED_QUOTES = 10
+
 export const DEFAULT_QUOTE: Quote = {
   project: {
     name: '',

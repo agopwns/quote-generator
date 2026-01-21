@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { QuoteForm } from '@/components/quote/quote-form'
 import { QuotePreview } from '@/components/quote/quote-preview'
+import { Sidebar } from '@/components/quote/sidebar'
+import { SaveDialog } from '@/components/quote/save-dialog'
 import { useQuoteStore } from '@/lib/store'
 import { Button } from '@/components/ui/button'
 import {
@@ -13,11 +15,13 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Eye, Printer, RotateCcw } from 'lucide-react'
+import { Eye, Printer, Menu } from 'lucide-react'
 
 export default function Home() {
-  const { quote, resetQuote } = useQuoteStore()
+  const { draft } = useQuoteStore()
   const [previewOpen, setPreviewOpen] = useState(false)
+  const [saveOpen, setSaveOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
 
   const handlePrint = () => {
     setPreviewOpen(false)
@@ -26,23 +30,21 @@ export default function Home() {
     }, 100)
   }
 
-  const handleReset = () => {
-    if (confirm('모든 입력 내용을 초기화하시겠습니까?')) {
-      resetQuote()
-      window.location.reload()
-    }
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-screen flex flex-col bg-gray-50">
       <header className="bg-white border-b sticky top-0 z-10 no-print">
-        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold">견적서 생성기</h1>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handleReset}>
-              <RotateCcw className="h-4 w-4 mr-1" />
-              초기화
+        <div className="px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+            >
+              <Menu className="h-5 w-5" />
             </Button>
+            <h1 className="text-lg font-bold">견적서 생성기</h1>
+          </div>
+          <div className="flex items-center gap-2">
             <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" size="sm">
@@ -61,7 +63,7 @@ export default function Home() {
                   </DialogTitle>
                 </DialogHeader>
                 <ScrollArea className="h-full">
-                  <QuotePreview quote={quote} />
+                  <QuotePreview quote={draft} />
                 </ScrollArea>
               </DialogContent>
             </Dialog>
@@ -73,12 +75,21 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 py-8 no-print">
-        <QuoteForm onPreview={() => setPreviewOpen(true)} />
-      </main>
+      <div className="flex flex-1 overflow-hidden no-print">
+        {sidebarOpen && (
+          <Sidebar onSave={() => setSaveOpen(true)} />
+        )}
+        <main className="flex-1 overflow-auto">
+          <div className="max-w-4xl mx-auto px-6 py-8">
+            <QuoteForm />
+          </div>
+        </main>
+      </div>
+
+      <SaveDialog open={saveOpen} onOpenChange={setSaveOpen} />
 
       <div className="print-only">
-        <QuotePreview quote={quote} />
+        <QuotePreview quote={draft} />
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { quoteSchema, QuoteFormData } from '@/lib/schema'
@@ -15,28 +15,30 @@ import { ScheduleEditor } from './schedule-editor'
 import { TermsEditor } from './terms-editor'
 import { ExpansionsEditor } from './expansions-editor'
 
-interface QuoteFormProps {
-  onPreview: () => void
-}
-
-export function QuoteForm({ onPreview }: QuoteFormProps) {
-  const { quote, setQuote } = useQuoteStore()
+export function QuoteForm() {
+  const { draft, currentId, setDraft } = useQuoteStore()
+  const prevIdRef = useRef<string | null>(currentId)
 
   const form = useForm<QuoteFormData>({
     resolver: zodResolver(quoteSchema),
-    defaultValues: quote || DEFAULT_QUOTE,
+    defaultValues: draft || DEFAULT_QUOTE,
   })
 
-  const watchedValues = form.watch()
+  useEffect(() => {
+    if (prevIdRef.current !== currentId) {
+      form.reset(draft)
+      prevIdRef.current = currentId
+    }
+  }, [currentId, draft, form])
 
   useEffect(() => {
     const subscription = form.watch((value) => {
       if (value) {
-        setQuote(value as QuoteFormData)
+        setDraft(value as QuoteFormData)
       }
     })
     return () => subscription.unsubscribe()
-  }, [form, setQuote])
+  }, [form, setDraft])
 
   return (
     <form className="space-y-6">
