@@ -1,5 +1,6 @@
-import { Quote, DesignTemplate } from './types'
+import { Quote, DesignTemplate, ColorTheme } from './types'
 import { Language, getTranslation } from './i18n'
+import { getColorTheme } from './color-themes'
 
 function formatAmount(amount: number, language: Language): string {
   if (language === 'en') {
@@ -60,16 +61,16 @@ function getDefaultStyles(): string {
     .section { margin-bottom: 48px; }
     .section-title { 
       font-size: 1.25rem; font-weight: 700; 
-      border-bottom: 3px solid #3b82f6; 
+      border-bottom: 3px solid var(--primary); 
       padding-bottom: 8px; margin-bottom: 24px;
       display: flex; align-items: center; gap: 8px;
     }
-    .section-number { color: #3b82f6; }
+    .section-number { color: var(--primary); }
     
     .table { width: 100%; border-collapse: collapse; }
     .table th, .table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #e2e8f0; }
     .table th { background: #f8fafc; font-weight: 600; }
-    .table .amount { text-align: right; font-weight: 600; color: #3b82f6; }
+    .table .amount { text-align: right; font-weight: 600; color: var(--primary); }
     
     .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
     .scope-box { padding: 20px; border-radius: 12px; }
@@ -83,12 +84,12 @@ function getDefaultStyles(): string {
     
     .tech-stack { display: flex; flex-wrap: wrap; gap: 8px; }
     .tech-badge { background: #f1f5f9; padding: 8px 16px; border-radius: 8px; font-size: 0.875rem; }
-    .tech-badge .category { color: #3b82f6; font-weight: 500; }
+    .tech-badge .category { color: var(--primary); font-weight: 500; }
     
-    .phase-card { background: #f8fafc; border-radius: 12px; padding: 24px; margin-bottom: 16px; border-left: 4px solid #3b82f6; }
+    .phase-card { background: #f8fafc; border-radius: 12px; padding: 24px; margin-bottom: 16px; border-left: 4px solid var(--primary); }
     .phase-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
     .phase-name { font-size: 1.125rem; font-weight: 700; }
-    .phase-amount { font-size: 1.5rem; font-weight: 700; color: #3b82f6; }
+    .phase-amount { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
     .phase-goal { background: white; padding: 8px 12px; border-radius: 6px; font-size: 0.875rem; color: #64748b; margin-bottom: 16px; }
     .phase-items { list-style: none; }
     .phase-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e2e8f0; }
@@ -104,12 +105,12 @@ function getDefaultStyles(): string {
     .total-note { font-size: 0.75rem; opacity: 0.6; margin-top: 8px; }
     
     .timeline { position: relative; padding-left: 32px; }
-    .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: #3b82f6; }
+    .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--primary); }
     .timeline-item { position: relative; padding-bottom: 24px; }
     .timeline-item::before { 
       content: ''; position: absolute; left: -28px; top: 4px; 
-      width: 16px; height: 16px; background: #3b82f6; border-radius: 50%; 
-      border: 3px solid white; box-shadow: 0 0 0 2px #3b82f6;
+      width: 16px; height: 16px; background: var(--primary); border-radius: 50%; 
+      border: 3px solid white; box-shadow: 0 0 0 2px var(--primary);
     }
     .timeline-phase { font-weight: 700; }
     .timeline-duration { color: #64748b; font-size: 0.875rem; }
@@ -177,7 +178,7 @@ function getNotionStyles(): string {
     .phase-box { border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 16px; overflow: hidden; }
     .phase-header { background: #f9fafb; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
     .phase-name { font-weight: 600; }
-    .phase-amount { color: #3b82f6; font-weight: 700; }
+    .phase-amount { color: var(--primary); font-weight: 700; }
     .phase-goal { background: #fef3c7; padding: 8px 16px; font-size: 0.875rem; color: #92400e; }
     .phase-items { padding: 16px; }
     .phase-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 0.875rem; }
@@ -191,12 +192,12 @@ function getNotionStyles(): string {
     
     .payment-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #f9fafb; border-radius: 8px; margin-bottom: 8px; }
     .payment-info { display: flex; align-items: center; gap: 12px; }
-    .payment-num { width: 24px; height: 24px; background: #dbeafe; color: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; }
+    .payment-num { width: 24px; height: 24px; background: var(--accent); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; }
     .payment-phase { font-weight: 500; }
     .payment-condition { color: #6b7280; font-size: 0.875rem; margin-left: 8px; }
-    .payment-amount { color: #3b82f6; font-weight: 700; }
+    .payment-amount { color: var(--primary); font-weight: 700; }
     
-    .timeline-item { display: flex; align-items: flex-start; gap: 16px; padding: 12px 16px; border-left: 2px solid #3b82f6; background: #eff6ff; border-radius: 0 8px 8px 0; margin-bottom: 12px; }
+    .timeline-item { display: flex; align-items: flex-start; gap: 16px; padding: 12px 16px; border-left: 2px solid var(--primary); background: var(--accent); border-radius: 0 8px 8px 0; margin-bottom: 12px; }
     .timeline-content { flex: 1; }
     .timeline-phase { font-weight: 500; }
     .timeline-deliverable { font-size: 0.875rem; color: #6b7280; }
@@ -257,7 +258,7 @@ function getShadcnStyles(): string {
     .badge { display: inline-block; padding: 4px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
     .badge-outline { border: 1px solid #e2e8f0; color: #64748b; }
     .badge-secondary { background: #f1f5f9; color: #475569; }
-    .badge-primary { background: #0f172a; color: white; }
+    .badge-primary { background: var(--primary); color: var(--primary-foreground); }
     
     .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
     .scope-card { border-radius: 12px; padding: 20px; }
@@ -280,10 +281,10 @@ function getShadcnStyles(): string {
     .phase-desc { font-size: 0.875rem; color: #64748b; }
     .phase-items { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .phase-item { display: flex; align-items: center; gap: 8px; padding: 8px; background: #f8fafc; border-radius: 6px; font-size: 0.875rem; }
-    .phase-item .dot { width: 8px; height: 8px; background: #0f172a; border-radius: 50%; }
+    .phase-item .dot { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; }
     .phase-item .detail { color: #64748b; font-size: 0.75rem; }
     
-    .total-card { background: #0f172a; color: white; }
+    .total-card { background: var(--primary); color: var(--primary-foreground); }
     .total-card .card-content { padding: 32px; text-align: center; }
     .total-label { font-size: 0.875rem; color: #94a3b8; margin-bottom: 8px; }
     .total-amount { font-size: 2.5rem; font-weight: 700; margin-bottom: 8px; }
@@ -296,7 +297,7 @@ function getShadcnStyles(): string {
     .timeline { position: relative; padding-left: 24px; }
     .timeline::before { content: ''; position: absolute; left: 8px; top: 8px; bottom: 8px; width: 2px; background: rgba(15, 23, 42, 0.1); }
     .timeline-item { position: relative; padding: 12px 0; }
-    .timeline-item::before { content: ''; position: absolute; left: -20px; top: 18px; width: 12px; height: 12px; background: #0f172a; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px #0f172a; }
+    .timeline-item::before { content: ''; position: absolute; left: -20px; top: 18px; width: 12px; height: 12px; background: var(--primary); border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px var(--primary); }
     .timeline-header { display: flex; align-items: center; gap: 8px; }
     .timeline-phase { font-weight: 500; }
     .timeline-deliverable { font-size: 0.875rem; color: #64748b; }
@@ -1412,10 +1413,34 @@ function renderContent(quote: Quote, language: Language, template: DesignTemplat
 // ============================================
 // GENERATE & DOWNLOAD HTML
 // ============================================
-export function generateAnimatedHTML(quote: Quote, language: Language = 'ko', template: DesignTemplate = 'default'): string {
+function getColorThemeCSS(colorTheme: ColorTheme): string {
+  const theme = getColorTheme(colorTheme)
+  return `
+    :root {
+      ${theme.cssVars['--primary']}
+      ${theme.cssVars['--primary-foreground']}
+      ${theme.cssVars['--accent']}
+      ${theme.cssVars['--accent-foreground']}
+      ${theme.cssVars['--ring']}
+    }
+  `
+}
+
+export function generateAnimatedHTML(quote: Quote, language: Language = 'ko', template: DesignTemplate = 'default', colorTheme: ColorTheme = 'zinc'): string {
   const fontFamily = template === 'formal' 
     ? 'Noto+Serif+KR:wght@400;500;600;700' 
     : 'Noto+Sans+KR:wght@400;500;600;700'
+  
+  const theme = getColorTheme(colorTheme)
+  const colorThemeStyles = `
+    :root {
+      --primary: ${theme.cssVars['--primary']};
+      --primary-foreground: ${theme.cssVars['--primary-foreground']};
+      --accent: ${theme.cssVars['--accent']};
+      --accent-foreground: ${theme.cssVars['--accent-foreground']};
+      --ring: ${theme.cssVars['--ring']};
+    }
+  `
   
   return `<!DOCTYPE html>
 <html lang="${language}">
@@ -1424,7 +1449,7 @@ export function generateAnimatedHTML(quote: Quote, language: Language = 'ko', te
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${quote.project.name || (language === 'ko' ? '견적서' : 'Quote')} - ${language === 'ko' ? '개발 견적서' : 'Development Quote'}</title>
   <link href="https://fonts.googleapis.com/css2?family=${fontFamily}&display=swap" rel="stylesheet">
-  <style>${getStyles(template)}</style>
+  <style>${colorThemeStyles}${getStyles(template)}</style>
 </head>
 <body>
   <div class="container">
@@ -1434,8 +1459,8 @@ export function generateAnimatedHTML(quote: Quote, language: Language = 'ko', te
 </html>`
 }
 
-export function downloadHTML(quote: Quote, language: Language = 'ko', template: DesignTemplate = 'default') {
-  const html = generateAnimatedHTML(quote, language, template)
+export function downloadHTML(quote: Quote, language: Language = 'ko', template: DesignTemplate = 'default', colorTheme: ColorTheme = 'zinc') {
+  const html = generateAnimatedHTML(quote, language, template, colorTheme)
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
