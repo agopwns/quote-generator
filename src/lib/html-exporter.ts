@@ -1,19 +1,26 @@
 import { Quote, DesignTemplate } from './types'
+import { Language, getTranslation } from './i18n'
 
-function formatAmount(amount: number): string {
+function formatAmount(amount: number, language: Language): string {
+  if (language === 'en') {
+    if (amount >= 10000) {
+      return `${(amount / 10000).toLocaleString()}B KRW`
+    }
+    return `${amount.toLocaleString()}M KRW`
+  }
   if (amount >= 10000) {
     return `${(amount / 10000).toLocaleString()}억원`
   }
   return `${amount.toLocaleString()}만원`
 }
 
-const STATUS_LABELS: Record<string, string> = {
-  visual: '✓ 시각',
-  working: '✓ 동작',
-  infra: '✓ 인프라',
-  docs: '✓ 문서',
-  stabilization: '✓ QA',
-}
+const getStatusLabels = (language: Language): Record<string, string> => ({
+  visual: language === 'ko' ? '✓ 시각' : '✓ Visual',
+  working: language === 'ko' ? '✓ 동작' : '✓ Logic',
+  infra: language === 'ko' ? '✓ 인프라' : '✓ Infra',
+  docs: language === 'ko' ? '✓ 문서' : '✓ Docs',
+  stabilization: language === 'ko' ? '✓ QA' : '✓ QA',
+})
 
 function getStyles(): string {
   return `
@@ -109,7 +116,9 @@ function getStyles(): string {
   `
 }
 
-function renderContent(quote: Quote): string {
+function renderContent(quote: Quote, language: Language): string {
+  const t = getTranslation(language)
+  const STATUS_LABELS = getStatusLabels(language)
   const totalAmount = quote.phases.reduce((sum, p) => sum + p.amount, 0)
   let sectionNum = 1
   let delayIndex = 1
@@ -118,30 +127,30 @@ function renderContent(quote: Quote): string {
 
   let html = `
     <div class="header animate">
-      <h1>${quote.project.name || '프로젝트명'}</h1>
+      <h1>${quote.project.name || (language === 'ko' ? '프로젝트명' : 'Project Name')}</h1>
       <p class="subtitle">${quote.project.subtitle}</p>
       ${quote.project.description ? `<p class="description">${quote.project.description}</p>` : ''}
       <p class="date">${quote.project.date}</p>
     </div>
 
     <section class="section animate ${getDelay()}">
-      <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> 프로젝트 개요</h2>
+      <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> ${t('section.overview')}</h2>
       <table class="table">
-        <tr><td style="width:150px;background:#f8fafc;font-weight:600;">프로젝트명</td><td>${quote.project.name}</td></tr>
-        ${quote.project.client ? `<tr><td style="background:#f8fafc;font-weight:600;">클라이언트</td><td>${quote.project.client}</td></tr>` : ''}
-        <tr><td style="background:#f8fafc;font-weight:600;">총 개발 비용</td><td class="amount">${formatAmount(totalAmount)} (VAT 별도)</td></tr>
+        <tr><td style="width:150px;background:#f8fafc;font-weight:600;">${t('table.project')}</td><td>${quote.project.name}</td></tr>
+        ${quote.project.client ? `<tr><td style="background:#f8fafc;font-weight:600;">${t('table.client')}</td><td>${quote.project.client}</td></tr>` : ''}
+        <tr><td style="background:#f8fafc;font-weight:600;">${t('table.totalCost')}</td><td class="amount">${formatAmount(totalAmount, language)} (${t('unit.vatExcluded')})</td></tr>
       </table>
     </section>
 
     <section class="section animate ${getDelay()}">
-      <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> 개발 범위</h2>
+      <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> ${t('section.scope')}</h2>
       <div class="scope-grid">
         <div class="scope-box included">
-          <h4>✓ 포함 항목</h4>
+          <h4>✓ ${t('section.included')}</h4>
           <ul>${quote.scope.includes.filter(i => i.value).map(i => `<li>• ${i.value}</li>`).join('')}</ul>
         </div>
         <div class="scope-box excluded">
-          <h4>✗ 제외 항목</h4>
+          <h4>✗ ${t('section.excluded')}</h4>
           <ul>${quote.scope.excludes.filter(i => i.value).map(i => `<li>• ${i.value}</li>`).join('')}</ul>
         </div>
       </div>
@@ -151,9 +160,9 @@ function renderContent(quote: Quote): string {
   if (quote.techStack.some(t => t.name)) {
     html += `
       <section class="section animate ${getDelay()}">
-        <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> 기술 스택</h2>
+        <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> ${t('section.techStack')}</h2>
         <div class="tech-stack">
-          ${quote.techStack.filter(t => t.name).map(t => `<div class="tech-badge"><span class="category">${t.category}</span> ${t.name}</div>`).join('')}
+          ${quote.techStack.filter(tech => tech.name).map(tech => `<div class="tech-badge"><span class="category">${tech.category}</span> ${tech.name}</div>`).join('')}
         </div>
       </section>
     `
@@ -161,14 +170,14 @@ function renderContent(quote: Quote): string {
 
   html += `
     <section class="section animate ${getDelay()}">
-      <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> 단계별 개발 계획</h2>
+      <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> ${t('section.phases')}</h2>
       ${quote.phases.map(phase => `
         <div class="phase-card">
           <div class="phase-header">
             <span class="phase-name">${phase.name}</span>
-            <span class="phase-amount">${formatAmount(phase.amount)}</span>
+            <span class="phase-amount">${formatAmount(phase.amount, language)}</span>
           </div>
-          ${phase.description ? `<div class="phase-goal">🎯 목표: ${phase.description}</div>` : ''}
+          ${phase.description ? `<div class="phase-goal">🎯 ${language === 'ko' ? '목표' : 'Goal'}: ${phase.description}</div>` : ''}
           <ul class="phase-items">
             ${phase.items.filter(i => i.name).map(i => `
               <li class="phase-item">
@@ -182,26 +191,26 @@ function renderContent(quote: Quote): string {
     </section>
 
     <section class="section animate ${getDelay()}">
-      <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> 비용 요약</h2>
+      <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> ${t('section.costSummary')}</h2>
       <div class="total-box">
-        <p class="total-label">총 개발 비용</p>
-        <p class="total-amount">${formatAmount(totalAmount)}</p>
-        <p class="total-note">VAT 별도</p>
+        <p class="total-label">${t('section.totalCost')}</p>
+        <p class="total-amount">${formatAmount(totalAmount, language)}</p>
+        <p class="total-note">${t('unit.vatExcluded')}</p>
       </div>
       <table class="table">
-        <thead><tr><th>단계</th><th>내용</th><th style="text-align:right">금액</th><th style="text-align:right">비율</th></tr></thead>
+        <thead><tr><th>${t('table.phase')}</th><th>${t('table.description')}</th><th style="text-align:right">${t('table.amount')}</th><th style="text-align:right">${t('table.percent')}</th></tr></thead>
         <tbody>
           ${quote.phases.map(p => `
             <tr>
               <td>${p.name}</td>
               <td>${p.description || '-'}</td>
-              <td class="amount">${formatAmount(p.amount)}</td>
+              <td class="amount">${formatAmount(p.amount, language)}</td>
               <td style="text-align:right">${totalAmount > 0 ? Math.round((p.amount / totalAmount) * 100) : 0}%</td>
             </tr>
           `).join('')}
           <tr style="background:#1e293b;color:white;font-weight:700;">
-            <td colspan="2">총 합계</td>
-            <td style="text-align:right">${formatAmount(totalAmount)}</td>
+            <td colspan="2">${t('table.total')}</td>
+            <td style="text-align:right">${formatAmount(totalAmount, language)}</td>
             <td style="text-align:right">100%</td>
           </tr>
         </tbody>
@@ -209,15 +218,15 @@ function renderContent(quote: Quote): string {
     </section>
   `
 
-  if (quote.paymentTerms.some(t => t.condition)) {
+  if (quote.paymentTerms.some(term => term.condition)) {
     html += `
       <section class="section animate ${getDelay()}">
-        <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> 결제 조건</h2>
+        <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> ${t('section.paymentTerms')}</h2>
         <table class="table">
-          <thead><tr><th>시점</th><th>조건</th><th style="text-align:right">금액</th></tr></thead>
+          <thead><tr><th>${t('table.timing')}</th><th>${t('table.condition')}</th><th style="text-align:right">${t('table.amount')}</th></tr></thead>
           <tbody>
-            ${quote.paymentTerms.filter(t => t.condition).map(t => `
-              <tr><td>${t.phase}</td><td>${t.condition}</td><td class="amount">${formatAmount(t.amount)}</td></tr>
+            ${quote.paymentTerms.filter(term => term.condition).map(term => `
+              <tr><td>${term.phase}</td><td>${term.condition}</td><td class="amount">${formatAmount(term.amount, language)}</td></tr>
             `).join('')}
           </tbody>
         </table>
@@ -228,7 +237,7 @@ function renderContent(quote: Quote): string {
   if (quote.schedule.some(s => s.phase)) {
     html += `
       <section class="section animate ${getDelay()}">
-        <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> 개발 일정</h2>
+        <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> ${t('section.timeline')}</h2>
         <div class="timeline">
           ${quote.schedule.filter(s => s.phase).map(s => `
             <div class="timeline-item">
@@ -241,13 +250,13 @@ function renderContent(quote: Quote): string {
     `
   }
 
-  if (quote.terms.some(t => t.label)) {
+  if (quote.terms.some(term => term.label)) {
     html += `
       <section class="section animate ${getDelay()}">
-        <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> 기타 조건</h2>
+        <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> ${t('section.terms')}</h2>
         <table class="table">
-          ${quote.terms.filter(t => t.label).map(t => `
-            <tr><td style="width:150px;background:#f8fafc;font-weight:600;">${t.label}</td><td>${t.value}</td></tr>
+          ${quote.terms.filter(term => term.label).map(term => `
+            <tr><td style="width:150px;background:#f8fafc;font-weight:600;">${term.label}</td><td>${term.value}</td></tr>
           `).join('')}
         </table>
       </section>
@@ -257,12 +266,12 @@ function renderContent(quote: Quote): string {
   if (quote.expansions.some(e => e.feature)) {
     html += `
       <section class="section animate ${getDelay()}">
-        <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> 향후 확장 옵션</h2>
+        <h2 class="section-title"><span class="section-number">0${sectionNum++}</span> ${t('section.expansions')}</h2>
         <table class="table">
-          <thead><tr><th>기능</th><th>설명</th><th style="text-align:right">예상 비용</th></tr></thead>
+          <thead><tr><th>${t('table.feature')}</th><th>${t('table.description')}</th><th style="text-align:right">${t('table.estCost')}</th></tr></thead>
           <tbody>
             ${quote.expansions.filter(e => e.feature).map(e => `
-              <tr><td>${e.feature}</td><td>${e.description}</td><td class="amount">${formatAmount(e.amount)}</td></tr>
+              <tr><td>${e.feature}</td><td>${e.description}</td><td class="amount">${formatAmount(e.amount, language)}</td></tr>
             `).join('')}
           </tbody>
         </table>
@@ -272,34 +281,34 @@ function renderContent(quote: Quote): string {
 
   html += `
     <div class="footer animate ${getDelay()}">
-      <p>본 제안서의 유효기간은 발행일로부터 30일입니다.</p>
-      <p>문의사항이 있으시면 언제든 연락 주시기 바랍니다.</p>
+      <p>${t('section.footer1')}</p>
+      <p>${t('section.footer2')}</p>
     </div>
   `
 
   return html
 }
 
-export function generateAnimatedHTML(quote: Quote): string {
+export function generateAnimatedHTML(quote: Quote, language: Language = 'ko'): string {
   return `<!DOCTYPE html>
-<html lang="ko">
+<html lang="${language}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${quote.project.name || '견적서'} - 개발 견적서</title>
+  <title>${quote.project.name || (language === 'ko' ? '견적서' : 'Quote')} - ${language === 'ko' ? '개발 견적서' : 'Development Quote'}</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>${getStyles()}</style>
 </head>
 <body>
   <div class="container">
-    ${renderContent(quote)}
+    ${renderContent(quote, language)}
   </div>
 </body>
 </html>`
 }
 
-export function downloadHTML(quote: Quote) {
-  const html = generateAnimatedHTML(quote)
+export function downloadHTML(quote: Quote, language: Language = 'ko') {
+  const html = generateAnimatedHTML(quote, language)
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')

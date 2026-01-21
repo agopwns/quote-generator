@@ -2,13 +2,23 @@
 
 import { useQuoteStore } from '@/lib/store'
 import { DESIGN_TEMPLATES, DesignTemplate } from '@/lib/types'
+import { getTranslation } from '@/lib/i18n'
+
+const DESIGN_TEMPLATE_KEYS: Record<DesignTemplate, string> = {
+  default: 'design.default',
+  notion: 'design.notion',
+  shadcn: 'design.shadcn',
+  minimal: 'design.minimal',
+  formal: 'design.formal',
+}
 
 export function TemplateStyleSelector() {
-  const { designTemplate, setDesignTemplate } = useQuoteStore()
+  const { designTemplate, setDesignTemplate, language } = useQuoteStore()
+  const t = getTranslation(language)
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-gray-500">스타일:</span>
+      <span className="text-sm text-gray-500">{t('preview.style')}</span>
       <select
         value={designTemplate}
         onChange={(e) => setDesignTemplate(e.target.value as DesignTemplate)}
@@ -16,7 +26,7 @@ export function TemplateStyleSelector() {
       >
         {DESIGN_TEMPLATES.map((template) => (
           <option key={template.id} value={template.id}>
-            {template.name}
+            {t(DESIGN_TEMPLATE_KEYS[template.id])}
           </option>
         ))}
       </select>

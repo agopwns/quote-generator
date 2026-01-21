@@ -1,22 +1,31 @@
 'use client'
 
 import { Quote } from '@/lib/types'
+import { Language, getTranslation } from '@/lib/i18n'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 
 interface TemplateProps {
   quote: Quote
+  language: Language
 }
 
-function formatAmount(amount: number): string {
+function formatAmount(amount: number, language: Language): string {
+  if (language === 'en') {
+    if (amount >= 10000) {
+      return `${(amount / 10000).toLocaleString()}B KRW`
+    }
+    return `${amount.toLocaleString()}M KRW`
+  }
   if (amount >= 10000) {
     return `${(amount / 10000).toLocaleString()}억원`
   }
   return `${amount.toLocaleString()}만원`
 }
 
-export function ShadcnTemplate({ quote }: TemplateProps) {
+export function ShadcnTemplate({ quote, language }: TemplateProps) {
+  const t = getTranslation(language)
   const totalPhaseAmount = quote.phases.reduce((sum, p) => sum + p.amount, 0)
 
   return (
@@ -25,7 +34,7 @@ export function ShadcnTemplate({ quote }: TemplateProps) {
         <Card className="border-none shadow-lg">
           <CardHeader className="text-center pb-2">
             <CardTitle className="text-3xl font-bold tracking-tight">
-              {quote.project.name || 'Project Name'}
+              {quote.project.name || (language === 'ko' ? '프로젝트명' : 'Project Name')}
             </CardTitle>
             <p className="text-muted-foreground">{quote.project.subtitle}</p>
           </CardHeader>
@@ -43,7 +52,7 @@ export function ShadcnTemplate({ quote }: TemplateProps) {
         <div className="grid grid-cols-2 gap-4">
           <Card className="border-green-200 bg-green-50/50">
             <CardHeader className="pb-2">
-              <CardTitle className="text-base text-green-700">✓ Included</CardTitle>
+              <CardTitle className="text-base text-green-700">✓ {t('section.included')}</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-1.5">
@@ -59,7 +68,7 @@ export function ShadcnTemplate({ quote }: TemplateProps) {
 
           <Card className="border-red-200 bg-red-50/50">
             <CardHeader className="pb-2">
-              <CardTitle className="text-base text-red-700">✗ Excluded</CardTitle>
+              <CardTitle className="text-base text-red-700">✗ {t('section.excluded')}</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-1.5">
@@ -74,14 +83,14 @@ export function ShadcnTemplate({ quote }: TemplateProps) {
           </Card>
         </div>
 
-        {quote.techStack.some(t => t.name) && (
+        {quote.techStack.some(tech => tech.name) && (
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Tech Stack</CardTitle>
+              <CardTitle className="text-lg">{t('section.techStack')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
-                {quote.techStack.filter(t => t.name).map((tech) => (
+                {quote.techStack.filter(tech => tech.name).map((tech) => (
                   <Badge key={tech.id} variant="secondary" className="text-sm">
                     {tech.category}: {tech.name}
                   </Badge>
@@ -93,7 +102,7 @@ export function ShadcnTemplate({ quote }: TemplateProps) {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-lg">Development Phases</CardTitle>
+            <CardTitle className="text-lg">{t('section.phases')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {quote.phases.map((phase, idx) => (
@@ -106,7 +115,7 @@ export function ShadcnTemplate({ quote }: TemplateProps) {
                       <p className="text-sm text-muted-foreground">{phase.description}</p>
                     )}
                   </div>
-                  <Badge className="text-lg px-3 py-1">{formatAmount(phase.amount)}</Badge>
+                  <Badge className="text-lg px-3 py-1">{formatAmount(phase.amount, language)}</Badge>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {phase.items.filter(i => i.name).map((item) => (
@@ -124,26 +133,26 @@ export function ShadcnTemplate({ quote }: TemplateProps) {
 
         <Card className="bg-slate-900 text-white border-none">
           <CardContent className="py-8 text-center">
-            <p className="text-slate-400 text-sm mb-2">Total Development Cost</p>
-            <p className="text-4xl font-bold mb-2">{formatAmount(totalPhaseAmount)}</p>
-            <p className="text-slate-500 text-sm">VAT excluded</p>
+            <p className="text-slate-400 text-sm mb-2">{t('section.totalCost')}</p>
+            <p className="text-4xl font-bold mb-2">{formatAmount(totalPhaseAmount, language)}</p>
+            <p className="text-slate-500 text-sm">{t('unit.vatExcluded')}</p>
           </CardContent>
         </Card>
 
-        {quote.paymentTerms.some(t => t.condition) && (
+        {quote.paymentTerms.some(term => term.condition) && (
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Payment Schedule</CardTitle>
+              <CardTitle className="text-lg">{t('section.paymentTerms')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {quote.paymentTerms.filter(t => t.condition).map((term) => (
+                {quote.paymentTerms.filter(term => term.condition).map((term) => (
                   <div key={term.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50">
                     <div>
                       <span className="font-medium">{term.phase}</span>
                       <span className="text-muted-foreground text-sm ml-2">{term.condition}</span>
                     </div>
-                    <Badge variant="outline" className="font-bold">{formatAmount(term.amount)}</Badge>
+                    <Badge variant="outline" className="font-bold">{formatAmount(term.amount, language)}</Badge>
                   </div>
                 ))}
               </div>
@@ -154,7 +163,7 @@ export function ShadcnTemplate({ quote }: TemplateProps) {
         {quote.schedule.some(s => s.phase) && (
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Project Timeline</CardTitle>
+              <CardTitle className="text-lg">{t('section.timeline')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="relative">
@@ -178,14 +187,14 @@ export function ShadcnTemplate({ quote }: TemplateProps) {
           </Card>
         )}
 
-        {quote.terms.some(t => t.label) && (
+        {quote.terms.some(term => term.label) && (
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Terms & Conditions</CardTitle>
+              <CardTitle className="text-lg">{t('section.terms')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-3">
-                {quote.terms.filter(t => t.label).map((term) => (
+                {quote.terms.filter(term => term.label).map((term) => (
                   <div key={term.id} className="p-3 rounded-lg bg-slate-50">
                     <p className="text-xs text-muted-foreground mb-1">{term.label}</p>
                     <p className="text-sm font-medium">{term.value}</p>
@@ -199,7 +208,7 @@ export function ShadcnTemplate({ quote }: TemplateProps) {
         {quote.expansions.some(e => e.feature) && (
           <Card className="border-dashed">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Future Expansion Options</CardTitle>
+              <CardTitle className="text-lg">{t('section.expansions')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
@@ -209,7 +218,7 @@ export function ShadcnTemplate({ quote }: TemplateProps) {
                       <span className="font-medium">{exp.feature}</span>
                       <span className="text-muted-foreground text-sm ml-2">{exp.description}</span>
                     </div>
-                    <span className="text-muted-foreground">{formatAmount(exp.amount)}</span>
+                    <span className="text-muted-foreground">{formatAmount(exp.amount, language)}</span>
                   </div>
                 ))}
               </div>
@@ -218,7 +227,7 @@ export function ShadcnTemplate({ quote }: TemplateProps) {
         )}
 
         <div className="text-center text-muted-foreground text-sm py-4">
-          <p>This proposal is valid for 30 days from the date of issue.</p>
+          <p>{t('section.footer1')}</p>
         </div>
       </div>
     </div>

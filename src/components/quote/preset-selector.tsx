@@ -4,14 +4,27 @@ import { useState, useRef, useEffect } from 'react'
 import { DEV_ITEM_PRESETS, PRESET_CATEGORIES, DevItemPreset } from '@/lib/presets'
 import { Button } from '@/components/ui/button'
 import { Package } from 'lucide-react'
+import { useQuoteStore } from '@/lib/store'
+import { getTranslation } from '@/lib/i18n'
 
 interface PresetSelectorProps {
   onSelect: (preset: DevItemPreset) => void
 }
 
+const CATEGORY_KEYS: Record<string, string> = {
+  backend: 'preset.backend',
+  auth: 'preset.auth',
+  payment: 'preset.payment',
+  frontend: 'preset.frontend',
+  infra: 'preset.infra',
+  etc: 'preset.etc',
+}
+
 export function PresetSelector({ onSelect }: PresetSelectorProps) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const { language } = useQuoteStore()
+  const t = getTranslation(language)
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -34,7 +47,7 @@ export function PresetSelector({ onSelect }: PresetSelectorProps) {
         onClick={() => setOpen(!open)}
       >
         <Package className="h-4 w-4 mr-1" />
-        프리셋 추가
+        {t('form.presetAdd')}
       </Button>
 
       {open && (
@@ -46,7 +59,7 @@ export function PresetSelector({ onSelect }: PresetSelectorProps) {
             return (
               <div key={categoryKey} className="p-2">
                 <h4 className="text-xs font-semibold text-gray-500 px-2 py-1">
-                  {PRESET_CATEGORIES[categoryKey]}
+                  {t(CATEGORY_KEYS[categoryKey])}
                 </h4>
                 {presets.map((preset) => (
                   <button
@@ -63,7 +76,7 @@ export function PresetSelector({ onSelect }: PresetSelectorProps) {
                       <span className="text-gray-400 text-xs ml-1">({preset.detail})</span>
                     </div>
                     <span className="text-blue-600 text-xs font-medium">
-                      {preset.suggestedAmount}만원
+                      {preset.suggestedAmount}{t('unit.won')}
                     </span>
                   </button>
                 ))}

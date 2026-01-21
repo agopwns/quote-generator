@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { Quote, SavedQuote, DEFAULT_QUOTE, MAX_SAVED_QUOTES, DesignTemplate, ProjectTemplate } from './types'
+import { Language } from './i18n'
 
 interface QuoteStore {
   draft: Quote
@@ -8,6 +9,7 @@ interface QuoteStore {
   currentId: string | null
   designTemplate: DesignTemplate
   templateVersion: number
+  language: Language
   setDraft: (quote: Quote) => void
   resetDraft: () => void
   saveQuote: (name: string) => boolean
@@ -17,6 +19,7 @@ interface QuoteStore {
   newQuote: () => void
   setDesignTemplate: (template: DesignTemplate) => void
   loadProjectTemplate: (template: ProjectTemplate) => void
+  setLanguage: (lang: Language) => void
 }
 
 export const useQuoteStore = create<QuoteStore>()(
@@ -27,6 +30,7 @@ export const useQuoteStore = create<QuoteStore>()(
       currentId: null,
       designTemplate: 'default' as DesignTemplate,
       templateVersion: 0,
+      language: 'ko' as Language,
 
       setDraft: (draft) => set({ draft }),
 
@@ -109,9 +113,11 @@ export const useQuoteStore = create<QuoteStore>()(
           templateVersion: get().templateVersion + 1,
         })
       },
+
+      setLanguage: (lang: Language) => set({ language: lang }),
     }),
     {
-      name: 'quote-storage-v3',
+      name: 'quote-storage-v4',
     }
   )
 )

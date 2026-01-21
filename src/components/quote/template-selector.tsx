@@ -3,16 +3,18 @@
 import { useQuoteStore } from '@/lib/store'
 import { PROJECT_TEMPLATES } from '@/lib/templates'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { getTranslation } from '@/lib/i18n'
 
 export function TemplateSelector() {
-  const { loadProjectTemplate, draft } = useQuoteStore()
+  const { loadProjectTemplate, draft, language } = useQuoteStore()
+  const t = getTranslation(language)
 
   const handleSelect = (templateId: string) => {
     const template = PROJECT_TEMPLATES.find((t) => t.id === templateId)
     if (!template) return
 
     if (draft.project.name || draft.phases.some((p) => p.amount > 0)) {
-      if (!confirm('현재 작성 중인 내용이 대체됩니다. 계속하시겠습니까?')) {
+      if (!confirm(t('sidebar.replaceConfirm'))) {
         return
       }
     }

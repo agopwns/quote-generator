@@ -13,19 +13,19 @@ interface QuotePreviewProps {
 }
 
 export function QuotePreview({ quote }: QuotePreviewProps) {
-  const { designTemplate } = useQuoteStore()
+  const { designTemplate, language } = useQuoteStore()
 
   switch (designTemplate) {
     case 'notion':
-      return <NotionTemplate quote={quote} />
+      return <NotionTemplate quote={quote} language={language} />
     case 'shadcn':
-      return <ShadcnTemplate quote={quote} />
+      return <ShadcnTemplate quote={quote} language={language} />
     case 'minimal':
-      return <MinimalTemplate quote={quote} />
+      return <MinimalTemplate quote={quote} language={language} />
     case 'formal':
-      return <FormalTemplate quote={quote} />
+      return <FormalTemplate quote={quote} language={language} />
     default:
-      return <DefaultTemplate quote={quote} />
+      return <DefaultTemplate quote={quote} language={language} />
   }
 }
 

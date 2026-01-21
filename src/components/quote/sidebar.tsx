@@ -6,6 +6,7 @@ import { MAX_SAVED_QUOTES } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { TemplateSelector } from './template-selector'
+import { getTranslation } from '@/lib/i18n'
 import { 
   FilePlus, 
   FileText, 
@@ -29,19 +30,21 @@ export function Sidebar({ onSave }: SidebarProps) {
     currentId, 
     newQuote, 
     loadQuote, 
-    deleteQuote 
+    deleteQuote,
+    language
   } = useQuoteStore()
+  const t = getTranslation(language)
 
   const handleDelete = (e: React.MouseEvent, id: string) => {
     e.stopPropagation()
-    if (confirm('이 견적서를 삭제하시겠습니까?')) {
+    if (confirm(t('sidebar.deleteConfirm'))) {
       deleteQuote(id)
     }
   }
 
   const handleNew = () => {
     if (draft.project.name || draft.phases.some(p => p.amount > 0)) {
-      if (!confirm('현재 작성 중인 내용이 삭제됩니다. 새로 시작하시겠습니까?')) {
+      if (!confirm(t('sidebar.newConfirm'))) {
         return
       }
     }
@@ -50,7 +53,7 @@ export function Sidebar({ onSave }: SidebarProps) {
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
-    return date.toLocaleDateString('ko-KR', { 
+    return date.toLocaleDateString(language === 'ko' ? 'ko-KR' : 'en-US', { 
       month: 'short', 
       day: 'numeric',
       hour: '2-digit',
@@ -71,7 +74,7 @@ export function Sidebar({ onSave }: SidebarProps) {
             onClick={() => setActiveTab('quotes')}
           >
             <FileText className="h-3.5 w-3.5 inline mr-1" />
-            견적서
+            {t('sidebar.quotes')}
           </button>
           <button
             className={`flex-1 py-1.5 px-2 text-sm font-medium rounded transition-colors ${
@@ -82,7 +85,7 @@ export function Sidebar({ onSave }: SidebarProps) {
             onClick={() => setActiveTab('templates')}
           >
             <LayoutTemplate className="h-3.5 w-3.5 inline mr-1" />
-            템플릿
+            {t('sidebar.templates')}
           </button>
         </div>
         {activeTab === 'quotes' && (
@@ -94,7 +97,7 @@ export function Sidebar({ onSave }: SidebarProps) {
               onClick={handleNew}
             >
               <FilePlus className="h-4 w-4 mr-2" />
-              새 견적서
+              {t('sidebar.newQuote')}
             </Button>
             <Button 
               variant="default" 
@@ -103,7 +106,7 @@ export function Sidebar({ onSave }: SidebarProps) {
               onClick={onSave}
             >
               <Save className="h-4 w-4 mr-2" />
-              저장
+              {t('sidebar.save')}
             </Button>
           </div>
         )}
@@ -114,7 +117,7 @@ export function Sidebar({ onSave }: SidebarProps) {
           <div className="p-4 border-b">
             <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
               <FileText className="h-4 w-4" />
-              <span>임시 저장</span>
+              <span>{t('sidebar.draft')}</span>
             </div>
             <div 
               className={`p-3 rounded-lg cursor-pointer transition-colors ${
@@ -125,9 +128,9 @@ export function Sidebar({ onSave }: SidebarProps) {
               onClick={() => !currentId && null}
             >
               <p className="text-sm font-medium truncate">
-                {draft.project.name || '(제목 없음)'}
+                {draft.project.name || t('sidebar.untitled')}
               </p>
-              <p className="text-xs text-gray-500">자동 저장됨</p>
+              <p className="text-xs text-gray-500">{t('sidebar.autoSaved')}</p>
             </div>
           </div>
 
@@ -136,7 +139,7 @@ export function Sidebar({ onSave }: SidebarProps) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <FolderOpen className="h-4 w-4" />
-                  <span>저장됨</span>
+                  <span>{t('sidebar.saved')}</span>
                 </div>
                 <span className="text-xs text-gray-400">
                   {savedQuotes.length}/{MAX_SAVED_QUOTES}
@@ -147,7 +150,7 @@ export function Sidebar({ onSave }: SidebarProps) {
             <ScrollArea className="flex-1 px-4">
               {savedQuotes.length === 0 ? (
                 <p className="text-sm text-gray-400 text-center py-4">
-                  저장된 견적서 없음
+                  {t('sidebar.noSavedQuotes')}
                 </p>
               ) : (
                 <div className="space-y-2 pb-4">
@@ -187,7 +190,7 @@ export function Sidebar({ onSave }: SidebarProps) {
       ) : (
         <div className="flex-1 flex flex-col min-h-0 pt-4">
           <div className="px-4 pb-2">
-            <p className="text-sm text-gray-500">템플릿을 선택하세요</p>
+            <p className="text-sm text-gray-500">{t('sidebar.selectTemplate')}</p>
           </div>
           <TemplateSelector />
         </div>

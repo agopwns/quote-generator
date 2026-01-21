@@ -10,20 +10,28 @@ import { QuoteFormData } from '@/lib/schema'
 import { DevItemPreset } from '@/lib/presets'
 import { PresetSelector } from './preset-selector'
 import { Plus, X, GripVertical } from 'lucide-react'
+import { useQuoteStore } from '@/lib/store'
+import { getTranslation, Language } from '@/lib/i18n'
 
 interface PhaseEditorProps {
   form: UseFormReturn<QuoteFormData>
 }
 
-const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  visual: { label: '시각', color: 'bg-blue-100 text-blue-700' },
-  working: { label: '동작', color: 'bg-green-100 text-green-700' },
-  infra: { label: '인프라', color: 'bg-purple-100 text-purple-700' },
-  docs: { label: '문서', color: 'bg-yellow-100 text-yellow-700' },
-  stabilization: { label: '안정화', color: 'bg-orange-100 text-orange-700' },
-}
+const getStatusLabels = (language: Language) => ({
+  visual: { label: language === 'ko' ? '시각' : 'Visual', color: 'bg-blue-100 text-blue-700' },
+  working: { label: language === 'ko' ? '동작' : 'Logic', color: 'bg-green-100 text-green-700' },
+  infra: { label: language === 'ko' ? '인프라' : 'Infra', color: 'bg-purple-100 text-purple-700' },
+  docs: { label: language === 'ko' ? '문서' : 'Docs', color: 'bg-yellow-100 text-yellow-700' },
+  stabilization: { label: language === 'ko' ? '안정화' : 'QA', color: 'bg-orange-100 text-orange-700' },
+})
 
-function formatAmount(amount: number): string {
+function formatAmount(amount: number, language: Language): string {
+  if (language === 'en') {
+    if (amount >= 10000) {
+      return `${(amount / 10000).toLocaleString()}B KRW`
+    }
+    return `${amount.toLocaleString()}M KRW`
+  }
   if (amount >= 10000) {
     return `${(amount / 10000).toLocaleString()}억원`
   }
@@ -32,6 +40,8 @@ function formatAmount(amount: number): string {
 
 export function PhaseEditor({ form }: PhaseEditorProps) {
   const { control, register, setValue } = form
+  const { language } = useQuoteStore()
+  const t = getTranslation(language)
 
   const { fields: phases, append: appendPhase, remove: removePhase } = useFieldArray({
     control,
@@ -44,10 +54,10 @@ export function PhaseEditor({ form }: PhaseEditorProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">개발 단계 (Phase)</h2>
+        <h2 className="text-lg font-semibold">{t('form.phase')}</h2>
         <div className="flex items-center gap-4">
           <span className="text-sm text-muted-foreground">
-            총 합계: <span className="font-bold text-foreground">{formatAmount(totalAmount)}</span>
+            {t('form.totalSum')}: <span className="font-bold text-foreground">{formatAmount(totalAmount, language)}</span>
           </span>
           <Button
             type="button"
@@ -64,7 +74,7 @@ export function PhaseEditor({ form }: PhaseEditorProps) {
             }
           >
             <Plus className="h-4 w-4 mr-1" />
-            페이즈 추가
+            {t('form.addPhase')}
           </Button>
         </div>
       </div>
@@ -91,6 +101,9 @@ interface PhaseCardProps {
 
 function PhaseCard({ form, phaseIndex, onRemove, canRemove }: PhaseCardProps) {
   const { control, register, setValue, getValues } = form
+  const { language } = useQuoteStore()
+  const t = getTranslation(language)
+  const STATUS_LABELS = getStatusLabels(language)
 
   const { fields: items, append: appendItem, remove: removeItem } = useFieldArray({
     control,
@@ -126,10 +139,10 @@ function PhaseCard({ form, phaseIndex, onRemove, canRemove }: PhaseCardProps) {
               <Input
                 type="number"
                 className="w-32 text-right"
-                placeholder="금액"
+                placeholder={t('form.amount')}
                 {...register(`phases.${phaseIndex}.amount`, { valueAsNumber: true })}
               />
-              <span className="text-sm text-muted-foreground">만원</span>
+              <span className="text-sm text-muted-foreground">{t('unit.won')}</span>
             </div>
             {canRemove && (
               <Button type="button" variant="ghost" size="icon" onClick={onRemove}>
@@ -140,7 +153,7 @@ function PhaseCard({ form, phaseIndex, onRemove, canRemove }: PhaseCardProps) {
         </div>
         <Input
           className="mt-2"
-          placeholder="목표: 예) 앱 설치 → 로그인 → 홈 화면 진입 가능"
+          placeholder={t('form.goalPlaceholder')}
           {...register(`phases.${phaseIndex}.description`)}
         />
       </CardHeader>
@@ -148,12 +161,12 @@ function PhaseCard({ form, phaseIndex, onRemove, canRemove }: PhaseCardProps) {
         {items.map((item, itemIndex) => (
           <div key={item.id} className="flex items-center gap-2">
             <Input
-              placeholder="항목명"
+              placeholder={t('form.itemName')}
               className="flex-1"
               {...register(`phases.${phaseIndex}.items.${itemIndex}.name`)}
             />
             <Input
-              placeholder="상세 (선택)"
+              placeholder={t('form.itemDetail')}
               className="flex-1"
               {...register(`phases.${phaseIndex}.items.${itemIndex}.detail`)}
             />
@@ -195,7 +208,7 @@ function PhaseCard({ form, phaseIndex, onRemove, canRemove }: PhaseCardProps) {
             }
           >
             <Plus className="h-4 w-4 mr-1" />
-            항목 추가
+            {t('form.addItem')}
           </Button>
           <PresetSelector onSelect={handlePresetSelect} />
         </div>

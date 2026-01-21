@@ -1,54 +1,63 @@
 'use client'
 
 import { Quote } from '@/lib/types'
+import { Language, getTranslation } from '@/lib/i18n'
 
 interface TemplateProps {
   quote: Quote
+  language: Language
 }
 
-function formatAmount(amount: number): string {
+function formatAmount(amount: number, language: Language): string {
+  if (language === 'en') {
+    if (amount >= 10000) {
+      return `${(amount / 10000).toLocaleString()}B KRW`
+    }
+    return `${amount.toLocaleString()}M KRW`
+  }
   if (amount >= 10000) {
     return `${(amount / 10000).toLocaleString()}억원`
   }
   return `${amount.toLocaleString()}만원`
 }
 
-export function NotionTemplate({ quote }: TemplateProps) {
+export function NotionTemplate({ quote, language }: TemplateProps) {
+  const t = getTranslation(language)
   const totalPhaseAmount = quote.phases.reduce((sum, p) => sum + p.amount, 0)
 
   return (
     <div className="bg-white font-sans max-w-6xl mx-auto px-8 py-12 print:p-6">
       <div className="mb-10">
         <span className="text-6xl block mb-4">📋</span>
-        <h1 className="text-4xl font-bold mb-2">{quote.project.name || 'Project Name'}</h1>
+        <h1 className="text-4xl font-bold mb-2">{quote.project.name || (language === 'ko' ? '프로젝트명' : 'Project Name')}</h1>
         <p className="text-gray-500 text-lg">{quote.project.subtitle}</p>
       </div>
 
       <div className="bg-gray-50 rounded-lg p-5 mb-10 space-y-3">
         <div className="flex items-center">
-          <span className="w-32 text-gray-500 text-sm">📅 Date</span>
+          <span className="w-32 text-gray-500 text-sm">📅 {language === 'ko' ? '날짜' : 'Date'}</span>
           <span className="text-sm">{quote.project.date}</span>
         </div>
         {quote.project.client && (
           <div className="flex items-center">
-            <span className="w-32 text-gray-500 text-sm">👤 Client</span>
+            <span className="w-32 text-gray-500 text-sm">👤 {t('table.client')}</span>
             <span className="text-sm">{quote.project.client}</span>
           </div>
         )}
         <div className="flex items-center">
-          <span className="w-32 text-gray-500 text-sm">💰 Total</span>
-          <span className="text-sm font-semibold">{formatAmount(totalPhaseAmount)}</span>
+          <span className="w-32 text-gray-500 text-sm">💰 {t('table.total')}</span>
+          <span className="text-sm font-semibold">{formatAmount(totalPhaseAmount, language)}</span>
         </div>
         {quote.project.description && (
           <div className="flex items-start">
-            <span className="w-32 text-gray-500 text-sm">📝 Description</span>
+            <span className="w-32 text-gray-500 text-sm">📝 {language === 'ko' ? '설명' : 'Description'}</span>
             <span className="text-sm">{quote.project.description}</span>
           </div>
         )}
       </div>
 
       <div className="border-l-4 border-green-400 bg-green-50 p-4 rounded-r-lg mb-4">
-        <h2 className="font-bold text-green-800 mb-3">✅ Included</h2>
+        <h2 className="font-bold text-green-800 mb-3">✅ {t('section.included')}</h2>
         <ul className="space-y-1">
           {quote.scope.includes.filter(i => i.value).map((item) => (
             <li key={item.id} className="text-sm flex items-start gap-2">
@@ -60,7 +69,7 @@ export function NotionTemplate({ quote }: TemplateProps) {
       </div>
 
       <div className="border-l-4 border-red-400 bg-red-50 p-4 rounded-r-lg mb-10">
-        <h2 className="font-bold text-red-800 mb-3">❌ Excluded</h2>
+        <h2 className="font-bold text-red-800 mb-3">❌ {t('section.excluded')}</h2>
         <ul className="space-y-1">
           {quote.scope.excludes.filter(i => i.value).map((item) => (
             <li key={item.id} className="text-sm flex items-start gap-2">
@@ -71,13 +80,13 @@ export function NotionTemplate({ quote }: TemplateProps) {
         </ul>
       </div>
 
-      {quote.techStack.some(t => t.name) && (
+      {quote.techStack.some(tech => tech.name) && (
         <div className="mb-10">
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <span>🛠️</span> Tech Stack
+            <span>🛠️</span> {t('section.techStack')}
           </h2>
           <div className="flex flex-wrap gap-2">
-            {quote.techStack.filter(t => t.name).map((tech) => (
+            {quote.techStack.filter(tech => tech.name).map((tech) => (
               <span key={tech.id} className="bg-gray-100 text-gray-700 px-3 py-1.5 rounded-md text-sm">
                 {tech.category}: {tech.name}
               </span>
@@ -88,14 +97,14 @@ export function NotionTemplate({ quote }: TemplateProps) {
 
       <div className="mb-10">
         <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-          <span>📦</span> Phases
+          <span>📦</span> {t('section.phases')}
         </h2>
         <div className="space-y-4">
           {quote.phases.map((phase) => (
             <div key={phase.id} className="border border-gray-200 rounded-lg overflow-hidden">
               <div className="bg-gray-50 px-4 py-3 flex justify-between items-center">
                 <span className="font-semibold">{phase.name}</span>
-                <span className="text-blue-600 font-bold">{formatAmount(phase.amount)}</span>
+                <span className="text-blue-600 font-bold">{formatAmount(phase.amount, language)}</span>
               </div>
               {phase.description && (
                 <div className="px-4 py-2 bg-yellow-50 text-sm text-yellow-800">
@@ -119,18 +128,18 @@ export function NotionTemplate({ quote }: TemplateProps) {
       </div>
 
       <div className="bg-gray-900 text-white p-6 rounded-lg mb-10 text-center">
-        <p className="text-sm text-gray-400 mb-1">Total Development Cost</p>
-        <p className="text-3xl font-bold">{formatAmount(totalPhaseAmount)}</p>
-        <p className="text-xs text-gray-500 mt-1">VAT excluded</p>
+        <p className="text-sm text-gray-400 mb-1">{t('section.totalCost')}</p>
+        <p className="text-3xl font-bold">{formatAmount(totalPhaseAmount, language)}</p>
+        <p className="text-xs text-gray-500 mt-1">{t('unit.vatExcluded')}</p>
       </div>
 
-      {quote.paymentTerms.some(t => t.condition) && (
+      {quote.paymentTerms.some(term => term.condition) && (
         <div className="mb-10">
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <span>💳</span> Payment Terms
+            <span>💳</span> {t('section.paymentTerms')}
           </h2>
           <div className="space-y-2">
-            {quote.paymentTerms.filter(t => t.condition).map((term, idx) => (
+            {quote.paymentTerms.filter(term => term.condition).map((term, idx) => (
               <div key={term.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div className="flex items-center gap-3">
                   <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs flex items-center justify-center font-bold">
@@ -141,7 +150,7 @@ export function NotionTemplate({ quote }: TemplateProps) {
                     <span className="text-gray-500 text-sm ml-2">— {term.condition}</span>
                   </div>
                 </div>
-                <span className="font-bold text-blue-600">{formatAmount(term.amount)}</span>
+                <span className="font-bold text-blue-600">{formatAmount(term.amount, language)}</span>
               </div>
             ))}
           </div>
@@ -151,7 +160,7 @@ export function NotionTemplate({ quote }: TemplateProps) {
       {quote.schedule.some(s => s.phase) && (
         <div className="mb-10">
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <span>📅</span> Timeline
+            <span>📅</span> {t('section.timeline')}
           </h2>
           <div className="space-y-3">
             {quote.schedule.filter(s => s.phase).map((item) => (
@@ -167,13 +176,13 @@ export function NotionTemplate({ quote }: TemplateProps) {
         </div>
       )}
 
-      {quote.terms.some(t => t.label) && (
+      {quote.terms.some(term => term.label) && (
         <div className="mb-10">
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <span>📜</span> Terms
+            <span>📜</span> {t('section.terms')}
           </h2>
           <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-            {quote.terms.filter(t => t.label).map((term) => (
+            {quote.terms.filter(term => term.label).map((term) => (
               <div key={term.id} className="flex">
                 <span className="w-32 text-gray-500 text-sm shrink-0">{term.label}</span>
                 <span className="text-sm">{term.value}</span>
@@ -186,7 +195,7 @@ export function NotionTemplate({ quote }: TemplateProps) {
       {quote.expansions.some(e => e.feature) && (
         <div className="mb-10">
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <span>🚀</span> Future Options
+            <span>🚀</span> {t('section.expansions')}
           </h2>
           <div className="space-y-2">
             {quote.expansions.filter(e => e.feature).map((exp) => (
@@ -195,7 +204,7 @@ export function NotionTemplate({ quote }: TemplateProps) {
                   <span className="font-medium">{exp.feature}</span>
                   <span className="text-gray-500 text-sm ml-2">— {exp.description}</span>
                 </div>
-                <span className="text-gray-600">{formatAmount(exp.amount)}</span>
+                <span className="text-gray-600">{formatAmount(exp.amount, language)}</span>
               </div>
             ))}
           </div>
@@ -203,7 +212,7 @@ export function NotionTemplate({ quote }: TemplateProps) {
       )}
 
       <div className="text-center text-gray-400 text-sm pt-6 border-t border-gray-100">
-        <p>Valid for 30 days • Questions? Contact us anytime</p>
+        <p>{t('section.footer1')}</p>
       </div>
     </div>
   )

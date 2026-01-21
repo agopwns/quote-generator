@@ -18,9 +18,12 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Eye, Printer, Menu, FileCode } from 'lucide-react'
 import { downloadHTML } from '@/lib/html-exporter'
+import { LanguageToggle } from '@/components/quote/language-toggle'
+import { getTranslation } from '@/lib/i18n'
 
 export default function Home() {
-  const { draft } = useQuoteStore()
+  const { draft, language } = useQuoteStore()
+  const t = getTranslation(language)
   const [previewOpen, setPreviewOpen] = useState(false)
   const [saveOpen, setSaveOpen] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -37,36 +40,37 @@ export default function Home() {
       <header className="bg-white border-b sticky top-0 z-10 no-print">
         <div className="px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="icon"
               onClick={() => setSidebarOpen(!sidebarOpen)}
             >
               <Menu className="h-5 w-5" />
             </Button>
-            <h1 className="text-lg font-bold">견적서 생성기</h1>
+            <h1 className="text-lg font-bold">{t('app.title')}</h1>
           </div>
           <div className="flex items-center gap-2">
+            <LanguageToggle />
             <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" size="sm">
                   <Eye className="h-4 w-4 mr-1" />
-                  미리보기
+                  {t('app.preview')}
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-[98vw] w-[98vw] h-[98vh] flex flex-col p-0">
+              <DialogContent className="max-w-[98vw] w-[98vw] sm:max-w-[98vw] h-[98vh] flex flex-col pl-0 pr-4 py-0">
                 <DialogHeader className="shrink-0 px-6 py-4 border-b bg-white">
                   <DialogTitle className="flex items-center justify-between">
-                    <span>미리보기</span>
+                    <span>{t('preview.title')}</span>
                     <div className="flex items-center gap-4">
                       <TemplateStyleSelector />
-                      <Button size="sm" variant="outline" onClick={() => downloadHTML(draft)}>
+                      <Button size="sm" variant="outline" onClick={() => downloadHTML(draft, language)}>
                         <FileCode className="h-4 w-4 mr-1" />
-                        HTML
+                        {t('preview.html')}
                       </Button>
                       <Button size="sm" onClick={handlePrint}>
                         <Printer className="h-4 w-4 mr-1" />
-                        인쇄 / PDF
+                        {t('preview.print')}
                       </Button>
                     </div>
                   </DialogTitle>
@@ -78,7 +82,7 @@ export default function Home() {
             </Dialog>
             <Button size="sm" onClick={handlePrint}>
               <Printer className="h-4 w-4 mr-1" />
-              PDF
+              {t('app.pdf')}
             </Button>
           </div>
         </div>
