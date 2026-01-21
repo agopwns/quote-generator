@@ -2,9 +2,9 @@ import { ProjectTemplate } from '../types'
 
 export const webBasicTemplate: ProjectTemplate = {
   id: 'web-basic',
-  name: 'Website (Basic)',
+  name: '웹사이트 (기본)',
   icon: '🌐',
-  description: 'Landing page, company website',
+  description: '랜딩페이지, 회사 소개 사이트',
   category: 'web',
   data: {
     project: {

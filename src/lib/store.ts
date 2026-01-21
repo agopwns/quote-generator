@@ -7,6 +7,7 @@ interface QuoteStore {
   savedQuotes: SavedQuote[]
   currentId: string | null
   designTemplate: DesignTemplate
+  templateVersion: number
   setDraft: (quote: Quote) => void
   resetDraft: () => void
   saveQuote: (name: string) => boolean
@@ -25,6 +26,7 @@ export const useQuoteStore = create<QuoteStore>()(
       savedQuotes: [],
       currentId: null,
       designTemplate: 'default' as DesignTemplate,
+      templateVersion: 0,
 
       setDraft: (draft) => set({ draft }),
 
@@ -104,6 +106,7 @@ export const useQuoteStore = create<QuoteStore>()(
             },
           },
           currentId: null,
+          templateVersion: get().templateVersion + 1,
         })
       },
     }),

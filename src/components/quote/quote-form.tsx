@@ -16,8 +16,9 @@ import { TermsEditor } from './terms-editor'
 import { ExpansionsEditor } from './expansions-editor'
 
 export function QuoteForm() {
-  const { draft, currentId, setDraft } = useQuoteStore()
+  const { draft, currentId, templateVersion, setDraft } = useQuoteStore()
   const prevIdRef = useRef<string | null>(currentId)
+  const prevVersionRef = useRef<number>(templateVersion)
 
   const form = useForm<QuoteFormData>({
     resolver: zodResolver(quoteSchema),
@@ -30,6 +31,13 @@ export function QuoteForm() {
       prevIdRef.current = currentId
     }
   }, [currentId, draft, form])
+
+  useEffect(() => {
+    if (prevVersionRef.current !== templateVersion) {
+      form.reset(draft)
+      prevVersionRef.current = templateVersion
+    }
+  }, [templateVersion, draft, form])
 
   useEffect(() => {
     const subscription = form.watch((value) => {

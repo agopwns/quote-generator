@@ -12,7 +12,7 @@ export function TemplateSelector() {
     if (!template) return
 
     if (draft.project.name || draft.phases.some((p) => p.amount > 0)) {
-      if (!confirm('Current draft will be replaced. Continue?')) {
+      if (!confirm('현재 작성 중인 내용이 대체됩니다. 계속하시겠습니까?')) {
         return
       }
     }

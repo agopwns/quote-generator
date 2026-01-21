@@ -2,9 +2,9 @@ import { ProjectTemplate } from '../types'
 
 export const webPlatformTemplate: ProjectTemplate = {
   id: 'web-platform',
-  name: 'Web Platform',
+  name: '웹 플랫폼',
   icon: '🖥️',
-  description: 'SaaS, dashboard, full-stack platform',
+  description: 'SaaS, 대시보드, 풀스택 플랫폼',
   category: 'platform',
   data: {
     project: {

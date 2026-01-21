@@ -34,14 +34,14 @@ export function Sidebar({ onSave }: SidebarProps) {
 
   const handleDelete = (e: React.MouseEvent, id: string) => {
     e.stopPropagation()
-    if (confirm('Delete this quote?')) {
+    if (confirm('이 견적서를 삭제하시겠습니까?')) {
       deleteQuote(id)
     }
   }
 
   const handleNew = () => {
     if (draft.project.name || draft.phases.some(p => p.amount > 0)) {
-      if (!confirm('Current draft will be lost. Start new?')) {
+      if (!confirm('현재 작성 중인 내용이 삭제됩니다. 새로 시작하시겠습니까?')) {
         return
       }
     }
@@ -71,7 +71,7 @@ export function Sidebar({ onSave }: SidebarProps) {
             onClick={() => setActiveTab('quotes')}
           >
             <FileText className="h-3.5 w-3.5 inline mr-1" />
-            Quotes
+            견적서
           </button>
           <button
             className={`flex-1 py-1.5 px-2 text-sm font-medium rounded transition-colors ${
@@ -82,7 +82,7 @@ export function Sidebar({ onSave }: SidebarProps) {
             onClick={() => setActiveTab('templates')}
           >
             <LayoutTemplate className="h-3.5 w-3.5 inline mr-1" />
-            Templates
+            템플릿
           </button>
         </div>
         {activeTab === 'quotes' && (
@@ -94,7 +94,7 @@ export function Sidebar({ onSave }: SidebarProps) {
               onClick={handleNew}
             >
               <FilePlus className="h-4 w-4 mr-2" />
-              New Quote
+              새 견적서
             </Button>
             <Button 
               variant="default" 
@@ -103,7 +103,7 @@ export function Sidebar({ onSave }: SidebarProps) {
               onClick={onSave}
             >
               <Save className="h-4 w-4 mr-2" />
-              Save
+              저장
             </Button>
           </div>
         )}
@@ -114,7 +114,7 @@ export function Sidebar({ onSave }: SidebarProps) {
           <div className="p-4 border-b">
             <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
               <FileText className="h-4 w-4" />
-              <span>Draft</span>
+              <span>임시 저장</span>
             </div>
             <div 
               className={`p-3 rounded-lg cursor-pointer transition-colors ${
@@ -125,9 +125,9 @@ export function Sidebar({ onSave }: SidebarProps) {
               onClick={() => !currentId && null}
             >
               <p className="text-sm font-medium truncate">
-                {draft.project.name || '(Untitled)'}
+                {draft.project.name || '(제목 없음)'}
               </p>
-              <p className="text-xs text-gray-500">Auto-saved</p>
+              <p className="text-xs text-gray-500">자동 저장됨</p>
             </div>
           </div>
 
@@ -136,7 +136,7 @@ export function Sidebar({ onSave }: SidebarProps) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <FolderOpen className="h-4 w-4" />
-                  <span>Saved</span>
+                  <span>저장됨</span>
                 </div>
                 <span className="text-xs text-gray-400">
                   {savedQuotes.length}/{MAX_SAVED_QUOTES}
@@ -147,7 +147,7 @@ export function Sidebar({ onSave }: SidebarProps) {
             <ScrollArea className="flex-1 px-4">
               {savedQuotes.length === 0 ? (
                 <p className="text-sm text-gray-400 text-center py-4">
-                  No saved quotes
+                  저장된 견적서 없음
                 </p>
               ) : (
                 <div className="space-y-2 pb-4">
@@ -187,7 +187,7 @@ export function Sidebar({ onSave }: SidebarProps) {
       ) : (
         <div className="flex-1 flex flex-col min-h-0 pt-4">
           <div className="px-4 pb-2">
-            <p className="text-sm text-gray-500">Select a template to start</p>
+            <p className="text-sm text-gray-500">템플릿을 선택하세요</p>
           </div>
           <TemplateSelector />
         </div>

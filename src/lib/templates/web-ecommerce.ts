@@ -2,9 +2,9 @@ import { ProjectTemplate } from '../types'
 
 export const webEcommerceTemplate: ProjectTemplate = {
   id: 'web-ecommerce',
-  name: 'E-commerce Website',
+  name: '쇼핑몰',
   icon: '🛒',
-  description: 'Online shopping mall with payment',
+  description: '결제 기능 포함 온라인 쇼핑몰',
   category: 'web',
   data: {
     project: {

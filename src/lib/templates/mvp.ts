@@ -2,9 +2,9 @@ import { ProjectTemplate } from '../types'
 
 export const mvpTemplate: ProjectTemplate = {
   id: 'mvp',
-  name: 'MVP / Prototype',
+  name: 'MVP / 프로토타입',
   icon: '🔧',
-  description: 'Quick validation, minimal viable product',
+  description: '빠른 검증용 최소 기능 제품',
   category: 'mvp',
   data: {
     project: {

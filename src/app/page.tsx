@@ -16,7 +16,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Eye, Printer, Menu } from 'lucide-react'
+import { Eye, Printer, Menu, FileCode } from 'lucide-react'
+import { downloadHTML } from '@/lib/html-exporter'
 
 export default function Home() {
   const { draft } = useQuoteStore()
@@ -53,20 +54,24 @@ export default function Home() {
                   미리보기
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-[95vw] w-[95vw] h-[95vh] flex flex-col">
-                <DialogHeader className="shrink-0">
+              <DialogContent className="max-w-[98vw] w-[98vw] h-[98vh] flex flex-col p-0">
+                <DialogHeader className="shrink-0 px-6 py-4 border-b bg-white">
                   <DialogTitle className="flex items-center justify-between">
-                    <span>Preview</span>
+                    <span>미리보기</span>
                     <div className="flex items-center gap-4">
                       <TemplateStyleSelector />
+                      <Button size="sm" variant="outline" onClick={() => downloadHTML(draft)}>
+                        <FileCode className="h-4 w-4 mr-1" />
+                        HTML
+                      </Button>
                       <Button size="sm" onClick={handlePrint}>
                         <Printer className="h-4 w-4 mr-1" />
-                        Print / PDF
+                        인쇄 / PDF
                       </Button>
                     </div>
                   </DialogTitle>
                 </DialogHeader>
-                <div className="flex-1 overflow-auto min-h-0">
+                <div className="flex-1 overflow-auto min-h-0 bg-gray-100">
                   <QuotePreview quote={draft} />
                 </div>
               </DialogContent>

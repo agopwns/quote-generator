@@ -2,9 +2,9 @@ import { ProjectTemplate } from '../types'
 
 export const mobileAppTemplate: ProjectTemplate = {
   id: 'mobile-app',
-  name: 'Mobile App',
+  name: '모바일 앱',
   icon: '📱',
-  description: 'iOS/Android cross-platform app',
+  description: 'iOS/Android 크로스플랫폼 앱',
   category: 'mobile',
   data: {
     project: {

@@ -8,7 +8,7 @@ export function TemplateStyleSelector() {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-gray-500">Style:</span>
+      <span className="text-sm text-gray-500">스타일:</span>
       <select
         value={designTemplate}
         onChange={(e) => setDesignTemplate(e.target.value as DesignTemplate)}

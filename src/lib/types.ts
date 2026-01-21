@@ -88,11 +88,11 @@ export interface ProjectTemplate {
 export type DesignTemplate = 'default' | 'notion' | 'shadcn' | 'minimal' | 'formal'
 
 export const DESIGN_TEMPLATES: { id: DesignTemplate; name: string; description: string }[] = [
-  { id: 'default', name: 'Default', description: 'Clean blue accents with tables' },
-  { id: 'notion', name: 'Notion Style', description: 'Icons, callouts, minimal layout' },
-  { id: 'shadcn', name: 'shadcn Style', description: 'Modern cards with shadows' },
-  { id: 'minimal', name: 'Minimal Dark', description: 'Dark theme, minimal design' },
-  { id: 'formal', name: 'Formal Document', description: 'Conservative, official style' },
+  { id: 'default', name: '기본', description: '깔끔한 파란색 테이블 스타일' },
+  { id: 'notion', name: '노션 스타일', description: '아이콘, 콜아웃, 미니멀' },
+  { id: 'shadcn', name: '모던 카드', description: '그림자, 둥근 카드' },
+  { id: 'minimal', name: '미니멀 다크', description: '어두운 배경, 심플' },
+  { id: 'formal', name: '공식 문서', description: '보수적, 정갈한 표' },
 ]
 
 export const DEFAULT_QUOTE: Quote = {

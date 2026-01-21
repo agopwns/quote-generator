@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { QuoteFormData } from '@/lib/schema'
+import { DevItemPreset } from '@/lib/presets'
+import { PresetSelector } from './preset-selector'
 import { Plus, X, GripVertical } from 'lucide-react'
 
 interface PhaseEditorProps {
@@ -88,7 +90,7 @@ interface PhaseCardProps {
 }
 
 function PhaseCard({ form, phaseIndex, onRemove, canRemove }: PhaseCardProps) {
-  const { control, register, setValue } = form
+  const { control, register, setValue, getValues } = form
 
   const { fields: items, append: appendItem, remove: removeItem } = useFieldArray({
     control,
@@ -96,6 +98,17 @@ function PhaseCard({ form, phaseIndex, onRemove, canRemove }: PhaseCardProps) {
   })
 
   const watchedAmount = useWatch({ control, name: `phases.${phaseIndex}.amount` })
+
+  const handlePresetSelect = (preset: DevItemPreset) => {
+    appendItem({
+      id: crypto.randomUUID(),
+      name: preset.name,
+      detail: preset.detail,
+      status: preset.status,
+    })
+    const currentAmount = getValues(`phases.${phaseIndex}.amount`) || 0
+    setValue(`phases.${phaseIndex}.amount`, currentAmount + preset.suggestedAmount)
+  }
 
   return (
     <Card>
@@ -166,23 +179,26 @@ function PhaseCard({ form, phaseIndex, onRemove, canRemove }: PhaseCardProps) {
             )}
           </div>
         ))}
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="w-full"
-          onClick={() =>
-            appendItem({
-              id: crypto.randomUUID(),
-              name: '',
-              detail: '',
-              status: 'working',
-            })
-          }
-        >
-          <Plus className="h-4 w-4 mr-1" />
-          항목 추가
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="flex-1"
+            onClick={() =>
+              appendItem({
+                id: crypto.randomUUID(),
+                name: '',
+                detail: '',
+                status: 'working',
+              })
+            }
+          >
+            <Plus className="h-4 w-4 mr-1" />
+            항목 추가
+          </Button>
+          <PresetSelector onSelect={handlePresetSelect} />
+        </div>
       </CardContent>
     </Card>
   )
