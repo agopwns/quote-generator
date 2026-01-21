@@ -1,11 +1,12 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { Quote, SavedQuote, DEFAULT_QUOTE, MAX_SAVED_QUOTES } from './types'
+import { Quote, SavedQuote, DEFAULT_QUOTE, MAX_SAVED_QUOTES, DesignTemplate, ProjectTemplate } from './types'
 
 interface QuoteStore {
   draft: Quote
   savedQuotes: SavedQuote[]
   currentId: string | null
+  designTemplate: DesignTemplate
   setDraft: (quote: Quote) => void
   resetDraft: () => void
   saveQuote: (name: string) => boolean
@@ -13,6 +14,8 @@ interface QuoteStore {
   deleteQuote: (id: string) => void
   updateQuote: (id: string) => void
   newQuote: () => void
+  setDesignTemplate: (template: DesignTemplate) => void
+  loadProjectTemplate: (template: ProjectTemplate) => void
 }
 
 export const useQuoteStore = create<QuoteStore>()(
@@ -21,6 +24,7 @@ export const useQuoteStore = create<QuoteStore>()(
       draft: DEFAULT_QUOTE,
       savedQuotes: [],
       currentId: null,
+      designTemplate: 'default' as DesignTemplate,
 
       setDraft: (draft) => set({ draft }),
 
@@ -87,9 +91,24 @@ export const useQuoteStore = create<QuoteStore>()(
         )
         set({ savedQuotes: updated })
       },
+
+      setDesignTemplate: (template: DesignTemplate) => set({ designTemplate: template }),
+
+      loadProjectTemplate: (template: ProjectTemplate) => {
+        set({
+          draft: {
+            ...template.data,
+            project: {
+              ...template.data.project,
+              date: new Date().toISOString().slice(0, 7),
+            },
+          },
+          currentId: null,
+        })
+      },
     }),
     {
-      name: 'quote-storage-v2',
+      name: 'quote-storage-v3',
     }
   )
 )

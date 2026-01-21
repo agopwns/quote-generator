@@ -76,6 +76,25 @@ export interface SavedQuote {
 
 export const MAX_SAVED_QUOTES = 10
 
+export interface ProjectTemplate {
+  id: string
+  name: string
+  icon: string
+  description: string
+  category: 'web' | 'mobile' | 'platform' | 'mvp'
+  data: Quote
+}
+
+export type DesignTemplate = 'default' | 'notion' | 'shadcn' | 'minimal' | 'formal'
+
+export const DESIGN_TEMPLATES: { id: DesignTemplate; name: string; description: string }[] = [
+  { id: 'default', name: 'Default', description: 'Clean blue accents with tables' },
+  { id: 'notion', name: 'Notion Style', description: 'Icons, callouts, minimal layout' },
+  { id: 'shadcn', name: 'shadcn Style', description: 'Modern cards with shadows' },
+  { id: 'minimal', name: 'Minimal Dark', description: 'Dark theme, minimal design' },
+  { id: 'formal', name: 'Formal Document', description: 'Conservative, official style' },
+]
+
 export const DEFAULT_QUOTE: Quote = {
   project: {
     name: '',
