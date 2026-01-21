@@ -28,14 +28,14 @@ export function TemplateSelector() {
         {PROJECT_TEMPLATES.map((template) => (
           <div
             key={template.id}
-            className="p-3 rounded-lg cursor-pointer transition-colors bg-white border border-gray-200 hover:bg-blue-50 hover:border-blue-300"
+            className="p-3 rounded-lg cursor-pointer transition-colors bg-card border hover:bg-accent hover:border-primary"
             onClick={() => handleSelect(template.id)}
           >
             <div className="flex items-start gap-3">
               <span className="text-2xl">{template.icon}</span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium">{template.name}</p>
-                <p className="text-xs text-gray-500">{template.description}</p>
+                <p className="text-xs text-muted-foreground">{template.description}</p>
               </div>
             </div>
           </div>

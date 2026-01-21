@@ -29,7 +29,7 @@ export function ShadcnTemplate({ quote, language }: TemplateProps) {
   const totalPhaseAmount = quote.phases.reduce((sum, p) => sum + p.amount, 0)
 
   return (
-    <div className="bg-slate-50 min-h-screen p-8 print:p-4 print:bg-white">
+    <div className="bg-muted min-h-screen p-8 print:p-4 print:bg-background">
       <div className="max-w-6xl mx-auto space-y-6">
         <Card className="border-none shadow-lg">
           <CardHeader className="text-center pb-2">
@@ -119,7 +119,7 @@ export function ShadcnTemplate({ quote, language }: TemplateProps) {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {phase.items.filter(i => i.name).map((item) => (
-                    <div key={item.id} className="flex items-center gap-2 text-sm p-2 rounded-md bg-slate-50">
+                    <div key={item.id} className="flex items-center gap-2 text-sm p-2 rounded-md bg-muted">
                       <div className="w-2 h-2 rounded-full bg-primary"></div>
                       <span>{item.name}</span>
                       {item.detail && <span className="text-muted-foreground text-xs">({item.detail})</span>}
@@ -131,11 +131,11 @@ export function ShadcnTemplate({ quote, language }: TemplateProps) {
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-900 text-white border-none">
+        <Card className="bg-primary text-primary-foreground border-none">
           <CardContent className="py-8 text-center">
-            <p className="text-slate-400 text-sm mb-2">{t('section.totalCost')}</p>
+            <p className="opacity-70 text-sm mb-2">{t('section.totalCost')}</p>
             <p className="text-4xl font-bold mb-2">{formatAmount(totalPhaseAmount, language)}</p>
-            <p className="text-slate-500 text-sm">{t('unit.vatExcluded')}</p>
+            <p className="opacity-60 text-sm">{t('unit.vatExcluded')}</p>
           </CardContent>
         </Card>
 
@@ -147,7 +147,7 @@ export function ShadcnTemplate({ quote, language }: TemplateProps) {
             <CardContent>
               <div className="space-y-3">
                 {quote.paymentTerms.filter(term => term.condition).map((term) => (
-                  <div key={term.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50">
+                  <div key={term.id} className="flex items-center justify-between p-3 rounded-lg bg-muted">
                     <div>
                       <span className="font-medium">{term.phase}</span>
                       <span className="text-muted-foreground text-sm ml-2">{term.condition}</span>
@@ -195,7 +195,7 @@ export function ShadcnTemplate({ quote, language }: TemplateProps) {
             <CardContent>
               <div className="grid grid-cols-2 gap-3">
                 {quote.terms.filter(term => term.label).map((term) => (
-                  <div key={term.id} className="p-3 rounded-lg bg-slate-50">
+                  <div key={term.id} className="p-3 rounded-lg bg-muted">
                     <p className="text-xs text-muted-foreground mb-1">{term.label}</p>
                     <p className="text-sm font-medium">{term.value}</p>
                   </div>

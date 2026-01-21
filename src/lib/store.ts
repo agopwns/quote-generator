@@ -13,6 +13,7 @@ interface QuoteStore {
   setDraft: (quote: Quote) => void
   resetDraft: () => void
   saveQuote: (name: string) => boolean
+  saveAsNewQuote: (name: string) => boolean
   loadQuote: (id: string) => void
   deleteQuote: (id: string) => void
   updateQuote: (id: string) => void
@@ -51,6 +52,29 @@ export const useQuoteStore = create<QuoteStore>()(
           set({ savedQuotes: updated })
           return true
         }
+
+        if (savedQuotes.length >= MAX_SAVED_QUOTES) {
+          return false
+        }
+
+        const newQuote: SavedQuote = {
+          id: crypto.randomUUID(),
+          name,
+          createdAt: now,
+          updatedAt: now,
+          data: draft,
+        }
+
+        set({
+          savedQuotes: [newQuote, ...savedQuotes],
+          currentId: newQuote.id,
+        })
+        return true
+      },
+
+      saveAsNewQuote: (name: string) => {
+        const { draft, savedQuotes } = get()
+        const now = new Date().toISOString()
 
         if (savedQuotes.length >= MAX_SAVED_QUOTES) {
           return false

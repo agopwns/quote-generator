@@ -20,7 +20,7 @@ interface SaveDialogProps {
 }
 
 export function SaveDialog({ open, onOpenChange }: SaveDialogProps) {
-  const { draft, savedQuotes, currentId, saveQuote } = useQuoteStore()
+  const { draft, savedQuotes, currentId, saveQuote, saveAsNewQuote } = useQuoteStore()
   const [name, setName] = useState('')
   const [error, setError] = useState('')
 
@@ -58,6 +58,25 @@ export function SaveDialog({ open, onOpenChange }: SaveDialogProps) {
     }
   }
 
+  const handleSaveAsNew = () => {
+    if (!name.trim()) {
+      setError('견적서 이름을 입력해주세요')
+      return
+    }
+
+    if (!canSaveNew) {
+      setError(`최대 ${MAX_SAVED_QUOTES}개까지만 저장할 수 있습니다`)
+      return
+    }
+
+    const success = saveAsNewQuote(name.trim())
+    if (success) {
+      onOpenChange(false)
+    } else {
+      setError(`최대 ${MAX_SAVED_QUOTES}개까지만 저장할 수 있습니다`)
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -82,17 +101,22 @@ export function SaveDialog({ open, onOpenChange }: SaveDialogProps) {
             {error && <p className="text-sm text-red-500">{error}</p>}
           </div>
           {!isEditing && (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               저장된 견적서: {savedQuotes.length}/{MAX_SAVED_QUOTES}
             </p>
           )}
         </div>
-        <DialogFooter>
+        <DialogFooter className="flex-col sm:flex-row gap-2">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             취소
           </Button>
+          {isEditing && canSaveNew && (
+            <Button variant="secondary" onClick={handleSaveAsNew}>
+              새로 저장
+            </Button>
+          )}
           <Button onClick={handleSave}>
-            {isEditing ? '저장' : '새로 저장'}
+            {isEditing ? '덮어쓰기' : '저장'}
           </Button>
         </DialogFooter>
       </DialogContent>

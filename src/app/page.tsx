@@ -36,8 +36,8 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
-      <header className="bg-white border-b sticky top-0 z-10 no-print">
+    <div className="h-screen flex flex-col bg-muted">
+      <header className="bg-background border-b sticky top-0 z-10 no-print">
         <div className="px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Button
@@ -59,7 +59,7 @@ export default function Home() {
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-[98vw] w-[98vw] sm:max-w-[98vw] h-[98vh] flex flex-col pl-0 pr-4 py-0">
-                <DialogHeader className="shrink-0 px-6 py-4 border-b bg-white">
+                <DialogHeader className="shrink-0 px-6 py-4 border-b bg-background">
                   <DialogTitle className="flex items-center justify-between">
                     <span>{t('preview.title')}</span>
                     <div className="flex items-center gap-4">
@@ -75,7 +75,7 @@ export default function Home() {
                     </div>
                   </DialogTitle>
                 </DialogHeader>
-                <div className="flex-1 overflow-auto min-h-0 bg-gray-100">
+                <div className="flex-1 overflow-auto min-h-0 bg-muted">
                   <QuotePreview quote={draft} />
                 </div>
               </DialogContent>

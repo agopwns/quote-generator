@@ -51,21 +51,21 @@ export function PresetSelector({ onSelect }: PresetSelectorProps) {
       </Button>
 
       {open && (
-        <div className="absolute left-0 top-full mt-1 w-72 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-auto">
+        <div className="absolute left-0 top-full mt-1 w-72 bg-popover border rounded-lg shadow-lg z-50 max-h-80 overflow-auto">
           {categories.map((categoryKey) => {
             const presets = DEV_ITEM_PRESETS.filter((p) => p.category === categoryKey)
             if (presets.length === 0) return null
 
             return (
               <div key={categoryKey} className="p-2">
-                <h4 className="text-xs font-semibold text-gray-500 px-2 py-1">
+                <h4 className="text-xs font-semibold text-muted-foreground px-2 py-1">
                   {t(CATEGORY_KEYS[categoryKey])}
                 </h4>
                 {presets.map((preset) => (
                   <button
                     key={preset.id}
                     type="button"
-                    className="w-full text-left px-2 py-1.5 hover:bg-gray-100 rounded text-sm flex items-center justify-between"
+                    className="w-full text-left px-2 py-1.5 hover:bg-accent rounded text-sm flex items-center justify-between"
                     onClick={() => {
                       onSelect(preset)
                       setOpen(false)
@@ -73,7 +73,7 @@ export function PresetSelector({ onSelect }: PresetSelectorProps) {
                   >
                     <div>
                       <span className="font-medium">{preset.name}</span>
-                      <span className="text-gray-400 text-xs ml-1">({preset.detail})</span>
+                      <span className="text-muted-foreground text-xs ml-1">({preset.detail})</span>
                     </div>
                     <span className="text-blue-600 text-xs font-medium">
                       {preset.suggestedAmount}{t('unit.won')}
