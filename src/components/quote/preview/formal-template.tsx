@@ -51,7 +51,7 @@ export function FormalTemplate({ quote, language }: TemplateProps) {
             <h3 className="font-bold text-sm mb-3">2.1 {t('section.included')}</h3>
             <ul className="space-y-1 ml-4">
               {quote.scope.includes.filter(i => i.value).map((item, idx) => (
-                <li key={item.id} className="text-sm text-gray-700">
+                <li key={item.id} className="text-sm text-muted-foreground">
                   {idx + 1}. {item.value}
                 </li>
               ))}
@@ -61,7 +61,7 @@ export function FormalTemplate({ quote, language }: TemplateProps) {
             <h3 className="font-bold text-sm mb-3">2.2 {t('section.excluded')}</h3>
             <ul className="space-y-1 ml-4">
               {quote.scope.excludes.filter(i => i.value).map((item, idx) => (
-                <li key={item.id} className="text-sm text-gray-700">
+                <li key={item.id} className="text-sm text-muted-foreground">
                   {idx + 1}. {item.value}
                 </li>
               ))}
