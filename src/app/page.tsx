@@ -22,7 +22,7 @@ import { LanguageToggle } from '@/components/quote/language-toggle'
 import { getTranslation } from '@/lib/i18n'
 
 export default function Home() {
-  const { draft, language, designTemplate } = useQuoteStore()
+  const { draft, language, designTemplate, colorTheme, darkMode } = useQuoteStore()
   const t = getTranslation(language)
   const [previewOpen, setPreviewOpen] = useState(false)
   const [saveOpen, setSaveOpen] = useState(false)
@@ -64,7 +64,7 @@ export default function Home() {
                     <span>{t('preview.title')}</span>
                     <div className="flex items-center gap-4">
                       <TemplateStyleSelector />
-                      <Button size="sm" variant="outline" onClick={() => downloadHTML(draft, language, designTemplate)}>
+                      <Button size="sm" variant="outline" onClick={() => downloadHTML(draft, language, designTemplate, { colorTheme, darkMode })}>
                         <FileCode className="h-4 w-4 mr-1" />
                         {t('preview.html')}
                       </Button>

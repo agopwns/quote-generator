@@ -8,6 +8,8 @@ interface QuoteStore {
   savedQuotes: SavedQuote[]
   currentId: string | null
   designTemplate: DesignTemplate
+  colorTheme: string
+  darkMode: boolean
   templateVersion: number
   language: Language
   setDraft: (quote: Quote) => void
@@ -18,6 +20,8 @@ interface QuoteStore {
   updateQuote: (id: string) => void
   newQuote: () => void
   setDesignTemplate: (template: DesignTemplate) => void
+  setColorTheme: (themeId: string) => void
+  setDarkMode: (darkMode: boolean) => void
   loadProjectTemplate: (template: ProjectTemplate) => void
   setLanguage: (lang: Language) => void
 }
@@ -29,6 +33,8 @@ export const useQuoteStore = create<QuoteStore>()(
       savedQuotes: [],
       currentId: null,
       designTemplate: 'default' as DesignTemplate,
+      colorTheme: 'default',
+      darkMode: false,
       templateVersion: 0,
       language: 'ko' as Language,
 
@@ -99,6 +105,10 @@ export const useQuoteStore = create<QuoteStore>()(
       },
 
       setDesignTemplate: (template: DesignTemplate) => set({ designTemplate: template }),
+
+      setColorTheme: (themeId: string) => set({ colorTheme: themeId }),
+
+      setDarkMode: (darkMode: boolean) => set({ darkMode }),
 
       loadProjectTemplate: (template: ProjectTemplate) => {
         const { language } = get()

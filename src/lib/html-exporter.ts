@@ -1,5 +1,6 @@
 import { Quote, DesignTemplate } from './types'
 import { Language, getTranslation } from './i18n'
+import { generateThemeCSSString, getThemeById } from './theme-utils'
 
 function formatAmount(amount: number, language: Language): string {
   if (language === 'en') {
@@ -71,8 +72,9 @@ function getDefaultStyles(): string {
     .table th { background: #f8fafc; font-weight: 600; }
     .table .amount { text-align: right; font-weight: 600; color: #3b82f6; }
     
-    .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
     .scope-box { padding: 20px; border-radius: 12px; }
+    .scope-box ul { margin: 0; }
     .scope-box.included { background: #f0fdf4; border: 2px solid #22c55e; }
     .scope-box.excluded { background: #fef2f2; border: 2px solid #ef4444; }
     .scope-box h4 { font-weight: 700; margin-bottom: 12px; }
@@ -259,8 +261,9 @@ function getShadcnStyles(): string {
     .badge-secondary { background: #f1f5f9; color: #475569; }
     .badge-primary { background: #0f172a; color: white; }
     
-    .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
     .scope-card { border-radius: 12px; padding: 20px; }
+    .scope-card ul { margin: 0; }
     .scope-card.included { background: rgba(34, 197, 94, 0.05); border: 1px solid rgba(34, 197, 94, 0.2); }
     .scope-card.excluded { background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); }
     .scope-card h4 { font-size: 0.875rem; font-weight: 600; margin-bottom: 12px; }
@@ -353,8 +356,9 @@ function getMinimalStyles(): string {
     .section { margin-bottom: 48px; }
     .section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #52525b; margin-bottom: 24px; }
     
-    .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+    .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
     .scope-col h4 { font-size: 0.875rem; margin-bottom: 16px; }
+    .scope-col ul { margin: 0; }
     .scope-col.included h4 { color: #10b981; }
     .scope-col.excluded h4 { color: #ef4444; }
     .scope-col ul { list-style: none; }
@@ -1412,19 +1416,47 @@ function renderContent(quote: Quote, language: Language, template: DesignTemplat
 // ============================================
 // GENERATE & DOWNLOAD HTML
 // ============================================
-export function generateAnimatedHTML(quote: Quote, language: Language = 'ko', template: DesignTemplate = 'default'): string {
+export interface HTMLExportOptions {
+  colorTheme?: string
+  darkMode?: boolean
+}
+
+export function generateAnimatedHTML(
+  quote: Quote, 
+  language: Language = 'ko', 
+  template: DesignTemplate = 'default',
+  options: HTMLExportOptions = {}
+): string {
+  const { colorTheme = 'default', darkMode = false } = options
   const fontFamily = template === 'formal' 
     ? 'Noto+Serif+KR:wght@400;500;600;700' 
     : 'Noto+Sans+KR:wght@400;500;600;700'
   
+  let themeCSS = ''
+  if (template === 'shadcn' && colorTheme !== 'default') {
+    const theme = getThemeById(colorTheme)
+    if (theme) {
+      const mode = darkMode ? 'dark' : 'light'
+      themeCSS = `
+:root {
+  ${generateThemeCSSString(colorTheme, 'light')}
+}
+.dark {
+  ${generateThemeCSSString(colorTheme, 'dark')}
+}`
+    }
+  }
+  
+  const darkClass = template === 'shadcn' && darkMode ? ' class="dark"' : ''
+  
   return `<!DOCTYPE html>
-<html lang="${language}">
+<html lang="${language}"${darkClass}>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${quote.project.name || (language === 'ko' ? '견적서' : 'Quote')} - ${language === 'ko' ? '개발 견적서' : 'Development Quote'}</title>
   <link href="https://fonts.googleapis.com/css2?family=${fontFamily}&display=swap" rel="stylesheet">
-  <style>${getStyles(template)}</style>
+  <style>${getStyles(template)}${themeCSS}</style>
 </head>
 <body>
   <div class="container">
@@ -1434,8 +1466,13 @@ export function generateAnimatedHTML(quote: Quote, language: Language = 'ko', te
 </html>`
 }
 
-export function downloadHTML(quote: Quote, language: Language = 'ko', template: DesignTemplate = 'default') {
-  const html = generateAnimatedHTML(quote, language, template)
+export function downloadHTML(
+  quote: Quote, 
+  language: Language = 'ko', 
+  template: DesignTemplate = 'default',
+  options: HTMLExportOptions = {}
+) {
+  const html = generateAnimatedHTML(quote, language, template, options)
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')

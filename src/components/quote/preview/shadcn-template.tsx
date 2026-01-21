@@ -5,10 +5,13 @@ import { Language, getTranslation } from '@/lib/i18n'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import { getThemeStyleObject } from '@/lib/theme-utils'
 
 interface TemplateProps {
   quote: Quote
   language: Language
+  colorTheme?: string
+  darkMode?: boolean
 }
 
 function formatAmount(amount: number, language: Language): string {
@@ -24,13 +27,21 @@ function formatAmount(amount: number, language: Language): string {
   return `${amount.toLocaleString()}만원`
 }
 
-export function ShadcnTemplate({ quote, language }: TemplateProps) {
+export function ShadcnTemplate({ quote, language, colorTheme = 'default', darkMode = false }: TemplateProps) {
   const t = getTranslation(language)
   const totalPhaseAmount = quote.phases.reduce((sum, p) => sum + p.amount, 0)
+  const themeStyles = getThemeStyleObject(colorTheme, darkMode ? 'dark' : 'light')
 
   return (
-    <div className="bg-slate-50 min-h-screen p-8 print:p-4 print:bg-white">
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div 
+      className={`min-h-screen p-8 print:p-4 ${darkMode ? 'dark' : ''}`}
+      style={{
+        ...themeStyles,
+        backgroundColor: darkMode ? 'var(--background)' : undefined,
+        color: darkMode ? 'var(--foreground)' : undefined,
+      }}
+    >
+      <div className={`max-w-6xl mx-auto space-y-6 ${!darkMode ? 'bg-slate-50' : ''}`} style={!darkMode ? {} : { backgroundColor: 'var(--background)' }}>
         <Card className="border-none shadow-lg">
           <CardHeader className="text-center pb-2">
             <CardTitle className="text-3xl font-bold tracking-tight">

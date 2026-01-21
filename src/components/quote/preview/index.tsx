@@ -13,13 +13,13 @@ interface QuotePreviewProps {
 }
 
 export function QuotePreview({ quote }: QuotePreviewProps) {
-  const { designTemplate, language } = useQuoteStore()
+  const { designTemplate, language, colorTheme, darkMode } = useQuoteStore()
 
   switch (designTemplate) {
     case 'notion':
       return <NotionTemplate quote={quote} language={language} />
     case 'shadcn':
-      return <ShadcnTemplate quote={quote} language={language} />
+      return <ShadcnTemplate quote={quote} language={language} colorTheme={colorTheme} darkMode={darkMode} />
     case 'minimal':
       return <MinimalTemplate quote={quote} language={language} />
     case 'formal':

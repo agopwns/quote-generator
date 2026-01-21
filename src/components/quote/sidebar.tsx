@@ -13,14 +13,16 @@ import {
   Trash2, 
   FolderOpen,
   Save,
-  LayoutTemplate
+  LayoutTemplate,
+  Palette
 } from 'lucide-react'
+import { ColorThemeSelector } from './color-theme-selector'
 
 interface SidebarProps {
   onSave: () => void
 }
 
-type TabType = 'quotes' | 'templates'
+type TabType = 'quotes' | 'templates' | 'themes'
 
 export function Sidebar({ onSave }: SidebarProps) {
   const [activeTab, setActiveTab] = useState<TabType>('quotes')
@@ -86,6 +88,17 @@ export function Sidebar({ onSave }: SidebarProps) {
           >
             <LayoutTemplate className="h-3.5 w-3.5 inline mr-1" />
             {t('sidebar.templates')}
+          </button>
+          <button
+            className={`flex-1 py-1.5 px-2 text-sm font-medium rounded transition-colors ${
+              activeTab === 'themes'
+                ? 'bg-gray-900 text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+            onClick={() => setActiveTab('themes')}
+          >
+            <Palette className="h-3.5 w-3.5 inline mr-1" />
+            {language === 'ko' ? '테마' : 'Theme'}
           </button>
         </div>
         {activeTab === 'quotes' && (
@@ -187,12 +200,16 @@ export function Sidebar({ onSave }: SidebarProps) {
             </ScrollArea>
           </div>
         </>
-      ) : (
+      ) : activeTab === 'templates' ? (
         <div className="flex-1 flex flex-col min-h-0 pt-4">
           <div className="px-4 pb-2">
             <p className="text-sm text-gray-500">{t('sidebar.selectTemplate')}</p>
           </div>
           <TemplateSelector />
+        </div>
+      ) : (
+        <div className="flex-1 flex flex-col min-h-0">
+          <ColorThemeSelector />
         </div>
       )}
     </div>
