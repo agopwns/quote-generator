@@ -101,11 +101,13 @@ export const useQuoteStore = create<QuoteStore>()(
       setDesignTemplate: (template: DesignTemplate) => set({ designTemplate: template }),
 
       loadProjectTemplate: (template: ProjectTemplate) => {
+        const { language } = get()
+        const templateData = template.data[language]
         set({
           draft: {
-            ...template.data,
+            ...templateData,
             project: {
-              ...template.data.project,
+              ...templateData.project,
               date: new Date().toISOString().slice(0, 7),
             },
           },

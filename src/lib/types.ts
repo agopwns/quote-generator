@@ -82,7 +82,10 @@ export interface ProjectTemplate {
   icon: string
   description: string
   category: 'web' | 'mobile' | 'platform' | 'mvp'
-  data: Quote
+  data: {
+    ko: Quote
+    en: Quote
+  }
 }
 
 export type DesignTemplate = 'default' | 'notion' | 'shadcn' | 'minimal' | 'formal'
