@@ -71,7 +71,7 @@ function getDefaultStyles(): string {
     .table th { background: #f8fafc; font-weight: 600; }
     .table .amount { text-align: right; font-weight: 600; color: #3b82f6; }
     
-    .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
     .scope-box { padding: 20px; border-radius: 12px; }
     .scope-box.included { background: #f0fdf4; border: 2px solid #22c55e; }
     .scope-box.excluded { background: #fef2f2; border: 2px solid #ef4444; }
@@ -259,7 +259,7 @@ function getShadcnStyles(): string {
     .badge-secondary { background: #f1f5f9; color: #475569; }
     .badge-primary { background: #0f172a; color: white; }
     
-    .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
     .scope-card { border-radius: 12px; padding: 20px; }
     .scope-card.included { background: rgba(34, 197, 94, 0.05); border: 1px solid rgba(34, 197, 94, 0.2); }
     .scope-card.excluded { background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); }
@@ -353,7 +353,7 @@ function getMinimalStyles(): string {
     .section { margin-bottom: 48px; }
     .section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #52525b; margin-bottom: 24px; }
     
-    .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+    .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-bottom: 48px; }
     .scope-col h4 { font-size: 0.875rem; margin-bottom: 16px; }
     .scope-col.included h4 { color: #10b981; }
     .scope-col.excluded h4 { color: #ef4444; }
