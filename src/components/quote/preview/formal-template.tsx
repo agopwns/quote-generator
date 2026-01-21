@@ -18,7 +18,7 @@ export function FormalTemplate({ quote }: TemplateProps) {
 
   return (
     <div className="bg-white text-gray-900 min-h-screen p-16 print:p-12 font-serif">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <header className="text-center mb-16 pb-8 border-b-2 border-gray-900">
           <p className="text-sm tracking-[0.3em] text-gray-500 mb-4">DEVELOPMENT PROPOSAL</p>
           <h1 className="text-3xl font-bold mb-2">{quote.project.name || 'PROJECT NAME'}</h1>

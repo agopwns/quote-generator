@@ -33,7 +33,7 @@ export function DefaultTemplate({ quote }: TemplateProps) {
   const totalPhaseAmount = quote.phases.reduce((sum, p) => sum + p.amount, 0)
 
   return (
-    <div className="bg-white text-gray-900 p-12 max-w-4xl mx-auto print:p-8">
+    <div className="bg-white text-gray-900 p-12 max-w-6xl mx-auto print:p-8">
       <div className="text-center py-20 border-b-2 border-gray-200 mb-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">{quote.project.name || 'Project Name'}</h1>
         <p className="text-xl text-gray-600 mb-8">{quote.project.subtitle}</p>

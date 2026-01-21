@@ -21,7 +21,7 @@ export function ShadcnTemplate({ quote }: TemplateProps) {
 
   return (
     <div className="bg-slate-50 min-h-screen p-8 print:p-4 print:bg-white">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-6xl mx-auto space-y-6">
         <Card className="border-none shadow-lg">
           <CardHeader className="text-center pb-2">
             <CardTitle className="text-3xl font-bold tracking-tight">

@@ -17,7 +17,7 @@ export function NotionTemplate({ quote }: TemplateProps) {
   const totalPhaseAmount = quote.phases.reduce((sum, p) => sum + p.amount, 0)
 
   return (
-    <div className="bg-white font-sans max-w-3xl mx-auto px-8 py-12 print:p-6">
+    <div className="bg-white font-sans max-w-6xl mx-auto px-8 py-12 print:p-6">
       <div className="mb-10">
         <span className="text-6xl block mb-4">📋</span>
         <h1 className="text-4xl font-bold mb-2">{quote.project.name || 'Project Name'}</h1>

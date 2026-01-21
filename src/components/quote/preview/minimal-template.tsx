@@ -18,7 +18,7 @@ export function MinimalTemplate({ quote }: TemplateProps) {
 
   return (
     <div className="bg-zinc-950 text-zinc-100 min-h-screen p-12 print:p-8 print:bg-zinc-950">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <header className="mb-16 pb-8 border-b border-zinc-800">
           <h1 className="text-5xl font-light tracking-tight mb-4">
             {quote.project.name || 'Project Name'}
