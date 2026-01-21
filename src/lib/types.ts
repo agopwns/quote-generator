@@ -98,6 +98,8 @@ export const DESIGN_TEMPLATES: { id: DesignTemplate; name: string; description: 
   { id: 'formal', name: '공식 문서', description: '보수적, 정갈한 표' },
 ]
 
+export type ColorTheme = 'zinc' | 'blue' | 'green' | 'orange' | 'red' | 'violet'
+
 export const DEFAULT_QUOTE: Quote = {
   project: {
     name: '',

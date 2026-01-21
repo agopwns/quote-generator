@@ -1,7 +1,8 @@
 'use client'
 
-import { Quote, DesignTemplate } from '@/lib/types'
+import { Quote } from '@/lib/types'
 import { useQuoteStore } from '@/lib/store'
+import { getColorTheme } from '@/lib/color-themes'
 import { DefaultTemplate } from './default-template'
 import { NotionTemplate } from './notion-template'
 import { ShadcnTemplate } from './shadcn-template'
@@ -13,20 +14,29 @@ interface QuotePreviewProps {
 }
 
 export function QuotePreview({ quote }: QuotePreviewProps) {
-  const { designTemplate, language } = useQuoteStore()
+  const { designTemplate, language, colorTheme } = useQuoteStore()
+  const themeConfig = getColorTheme(colorTheme)
 
-  switch (designTemplate) {
-    case 'notion':
-      return <NotionTemplate quote={quote} language={language} />
-    case 'shadcn':
-      return <ShadcnTemplate quote={quote} language={language} />
-    case 'minimal':
-      return <MinimalTemplate quote={quote} language={language} />
-    case 'formal':
-      return <FormalTemplate quote={quote} language={language} />
-    default:
-      return <DefaultTemplate quote={quote} language={language} />
+  const renderTemplate = () => {
+    switch (designTemplate) {
+      case 'notion':
+        return <NotionTemplate quote={quote} language={language} />
+      case 'shadcn':
+        return <ShadcnTemplate quote={quote} language={language} />
+      case 'minimal':
+        return <MinimalTemplate quote={quote} language={language} />
+      case 'formal':
+        return <FormalTemplate quote={quote} language={language} />
+      default:
+        return <DefaultTemplate quote={quote} language={language} />
+    }
   }
+
+  return (
+    <div style={themeConfig.cssVars as React.CSSProperties}>
+      {renderTemplate()}
+    </div>
+  )
 }
 
 export {

@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { Quote, SavedQuote, DEFAULT_QUOTE, MAX_SAVED_QUOTES, DesignTemplate, ProjectTemplate } from './types'
+import { Quote, SavedQuote, DEFAULT_QUOTE, MAX_SAVED_QUOTES, DesignTemplate, ProjectTemplate, ColorTheme } from './types'
 import { Language } from './i18n'
 
 interface QuoteStore {
@@ -8,6 +8,7 @@ interface QuoteStore {
   savedQuotes: SavedQuote[]
   currentId: string | null
   designTemplate: DesignTemplate
+  colorTheme: ColorTheme
   templateVersion: number
   language: Language
   setDraft: (quote: Quote) => void
@@ -19,6 +20,7 @@ interface QuoteStore {
   updateQuote: (id: string) => void
   newQuote: () => void
   setDesignTemplate: (template: DesignTemplate) => void
+  setColorTheme: (theme: ColorTheme) => void
   loadProjectTemplate: (template: ProjectTemplate) => void
   setLanguage: (lang: Language) => void
 }
@@ -30,6 +32,7 @@ export const useQuoteStore = create<QuoteStore>()(
       savedQuotes: [],
       currentId: null,
       designTemplate: 'default' as DesignTemplate,
+      colorTheme: 'zinc' as ColorTheme,
       templateVersion: 0,
       language: 'ko' as Language,
 
@@ -124,6 +127,8 @@ export const useQuoteStore = create<QuoteStore>()(
 
       setDesignTemplate: (template: DesignTemplate) => set({ designTemplate: template }),
 
+      setColorTheme: (theme: ColorTheme) => set({ colorTheme: theme }),
+
       loadProjectTemplate: (template: ProjectTemplate) => {
         const { language } = get()
         const templateData = template.data[language]
@@ -143,7 +148,7 @@ export const useQuoteStore = create<QuoteStore>()(
       setLanguage: (lang: Language) => set({ language: lang }),
     }),
     {
-      name: 'quote-storage-v4',
+      name: 'quote-storage-v5',
     }
   )
 )

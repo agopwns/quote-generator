@@ -19,6 +19,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Eye, Printer, Menu, FileCode } from 'lucide-react'
 import { downloadHTML } from '@/lib/html-exporter'
 import { LanguageToggle } from '@/components/quote/language-toggle'
+import { ColorThemeSelector } from '@/components/quote/color-theme-selector'
 import { getTranslation } from '@/lib/i18n'
 
 export default function Home() {
@@ -63,6 +64,7 @@ export default function Home() {
                   <DialogTitle className="flex items-center justify-between">
                     <span>{t('preview.title')}</span>
                     <div className="flex items-center gap-4">
+                      <ColorThemeSelector />
                       <TemplateStyleSelector />
                       <Button size="sm" variant="outline" onClick={() => downloadHTML(draft, language, designTemplate)}>
                         <FileCode className="h-4 w-4 mr-1" />
